@@ -1,3 +1,5 @@
+from management_solutions.models.Truck import truck
+
 def get_truck_input():
     vin = input("VIN: ")
     brand = input("Brand: ")
@@ -22,3 +24,9 @@ def get_truck_input():
 
     return kwargs
 
+def new_truck(kwargs): #method to create truck object
+    try:
+        return truck(**kwargs)
+    except ValueError:
+        print("vin fail")
+        return None
