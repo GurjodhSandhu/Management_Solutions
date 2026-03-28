@@ -7,33 +7,36 @@ class truck:
     def __init__(self,vin = None, brand = None, make= None, year= None, mileage= None, plate = "Asda"):
 
             self.vin = vin #vin number of truck
-            if len(vin) != 17:
-                raise InvalidVinError("VIN number is length 17")
+
+            if vin: #if vin is not None
+                if len(vin) != 17: #validation of value
+                    raise InvalidVinError("VIN number is length 17") #tracking error
+
 
             self.brand = brand
             self.make = make
 
 
             self.year = year
-            if year != int:
-                raise InvalidYearError("Year inputted is not a number")
-            if year > 1700:
-                raise InvalidYearError("Year inputted is to low")
-            if year < 2100:
-                raise InvalidYearError("Year inputted is to high")
-
-
+            if year:
+                if not isinstance(year,int): #checks if mileage is a interger
+                    raise InvalidYearError("Year inputted is not a number")
+                if year < 1700 or year > 2100:
+                    raise InvalidYearError("Year is out of range")
 
 
             self.mileage = mileage
-            if mileage < 0:
-                raise InvalidMileageError("Mileage is in the negative")
-            if mileage != int:
-                raise InvalidMileageError("Mileage is not a number")
+            if mileage:
+                if mileage < 0 :
+                    raise InvalidMileageError("Mileage is in the negative")
+                if not isinstance(mileage,int): #checks if mileage is a interger
+                    raise InvalidMileageError("Mileage is not a number")
+
 
             self.plate = plate
-            if len(plate) > 6:
-                raise InvalidPlateError("Length of license plate number to high must be 6 or below")
+            if plate:
+                if len(plate) > 6:
+                    raise InvalidPlateError("Length of license plate number to high must be 6 or below")
 
 
     def add_mileage(self,miles): #add mileage to truck

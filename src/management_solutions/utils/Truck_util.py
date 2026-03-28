@@ -4,8 +4,6 @@ from management_solutions.utils.exceptions import InvalidYearError
 from management_solutions.utils.exceptions import InvalidMileageError
 from management_solutions.utils.exceptions import InvalidPlateError
 
-
-
 def get_truck_input():
     vin = input("VIN: ")
     brand = input("Brand: ")
