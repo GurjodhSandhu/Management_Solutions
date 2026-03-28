@@ -9,9 +9,17 @@ def get_truck_input():
     vin = input("VIN: ")
     brand = input("Brand: ")
     make = input("Make: ")
-    year = int(input("Year: "))
-    mileage = int(input("Mileage: "))
+
+    year = input("Year: ")
+    if year.isdigit():
+        year = int(year)
+    mileage = input("Mileage: ")
+    if mileage.isdigit():
+        mileage = int(year)
+
     plate = input("Plate Number: ")
+
+    #validate inputs
 
     kwargs = {}
     if vin:

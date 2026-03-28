@@ -28,7 +28,7 @@ class truck:
                     if "year" not in errors:
                         errors["year"] = []
                     errors["year"].append("Year inputted is not a number")
-                if year < 1700 or year > 2100:
+                elif year < 1700 or year > 2100: #if year is a number validate further
                     if "year" not in errors:
                         errors["year"] = []
                     errors["year"].append("Year is out of range")
@@ -36,14 +36,15 @@ class truck:
             #Mileage validation
             self.mileage = mileage
             if mileage:
-                if mileage < 0 :
-                    if "mileage" not in errors:
-                        errors["mileage"] = []
-                    errors["mileage"].append("Mileage is in the negative")
                 if not isinstance(mileage,int):
                     if "mileage" not in errors:
                         errors["mileage"] = []
                     errors["mileage"].append("Mileage is not a number")
+                elif mileage < 0 :
+                    if "mileage" not in errors:
+                        errors["mileage"] = []
+                    errors["mileage"].append("Mileage is in the negative")
+
 
             #Plate validation
             self.plate = plate
