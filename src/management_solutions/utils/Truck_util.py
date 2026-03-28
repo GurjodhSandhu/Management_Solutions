@@ -3,6 +3,7 @@ from management_solutions.utils.exceptions import InvalidVinError
 from management_solutions.utils.exceptions import InvalidYearError
 from management_solutions.utils.exceptions import InvalidMileageError
 from management_solutions.utils.exceptions import InvalidPlateError
+from management_solutions.utils.exceptions import TruckValidationError
 
 def get_truck_input():
     vin = input("VIN: ")
@@ -31,6 +32,14 @@ def get_truck_input():
 def new_truck(kwargs): #method to create truck object
     try:
         return truck(**kwargs)
+
+    except TruckValidationError as e:
+        print(e)
+        print(e.errors["vin"])
+        print(e.errors["year"])
+        #iterate through the
+
+
     except InvalidVinError as e:
         print(e)
         return None
