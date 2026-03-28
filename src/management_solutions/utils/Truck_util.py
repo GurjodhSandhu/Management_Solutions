@@ -1,5 +1,10 @@
 from management_solutions.models.Truck import truck
 from management_solutions.utils.exceptions import InvalidVinError
+from management_solutions.utils.exceptions import InvalidYearError
+from management_solutions.utils.exceptions import InvalidMileageError
+from management_solutions.utils.exceptions import InvalidPlateError
+
+
 
 def get_truck_input():
     vin = input("VIN: ")
@@ -17,9 +22,9 @@ def get_truck_input():
     if make:
         kwargs["make"] = make
     if year:
-        kwargs["year"] = int(year)
+        kwargs["year"] = year
     if mileage:
-        kwargs["mileage"] = float(mileage)
+        kwargs["mileage"] = mileage
     if plate:
         kwargs["plate"] = plate
 
@@ -28,6 +33,15 @@ def get_truck_input():
 def new_truck(kwargs): #method to create truck object
     try:
         return truck(**kwargs)
-    except InvalidVinError:
-        print("invalid vin")
+    except InvalidVinError as e:
+        print(e)
+        return None
+    except InvalidYearError as e:
+        print(e)
+        return None
+    except InvalidMileageError as e:
+        print(e)
+        return None
+    except InvalidPlateError as e:
+        print(e)
         return None
