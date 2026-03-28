@@ -1,4 +1,5 @@
 from management_solutions.models.Truck import truck
+from management_solutions.utils.exceptions import InvalidVinError
 
 def get_truck_input():
     vin = input("VIN: ")
@@ -27,6 +28,6 @@ def get_truck_input():
 def new_truck(kwargs): #method to create truck object
     try:
         return truck(**kwargs)
-    except ValueError:
+    except InvalidVinError:
         print("invalid vin")
         return None
