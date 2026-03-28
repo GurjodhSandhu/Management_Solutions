@@ -1,0 +1,4 @@
+
+class InvalidVinError(Exception):
+    pass
+

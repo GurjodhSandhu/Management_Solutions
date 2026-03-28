@@ -1,10 +1,11 @@
+from management_solutions.utils.exceptions import InvalidVinError
+
 class truck:
     def __init__(self,vin = None, brand = None, make= None, year= None, mileage= None, plate = "Asda"):
 
             self.vin = vin #vin number of truck
-
             if len(vin) != 17:
-                raise ValueError("VIN number is length 17")
+                raise InvalidVinError("VIN number is length 17")
 
             self.brand = brand
             self.make = make

@@ -28,5 +28,5 @@ def new_truck(kwargs): #method to create truck object
     try:
         return truck(**kwargs)
     except ValueError:
-        print("vin fail")
+        print("invalid vin")
         return None
