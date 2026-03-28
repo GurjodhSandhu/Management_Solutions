@@ -9,8 +9,8 @@ def get_truck_input():
     vin = input("VIN: ")
     brand = input("Brand: ")
     make = input("Make: ")
-    year = input("Year: ")
-    mileage = input("Mileage: ")
+    year = int(input("Year: "))
+    mileage = int(input("Mileage: "))
     plate = input("Plate Number: ")
 
     kwargs = {}
@@ -34,10 +34,10 @@ def new_truck(kwargs): #method to create truck object
         return truck(**kwargs)
 
     except TruckValidationError as e:
-        print(e)
-        print(e.errors["vin"])
-        print(e.errors["year"])
-        #iterate through the
+        for values in e.errors.values():
+            for message in values:
+                print(message)
+        #iterate through the dictionary and print errors
 
 
     except InvalidVinError as e:

@@ -7,48 +7,60 @@ from management_solutions.utils.exceptions import TruckValidationError
 
 class truck:
     def __init__(self,vin = None, brand = None, make= None, year= None, mileage= None, plate = "Asda"):
+            errors = {} #dictionary to hold validation errors | each key (parameter) keeps a list of errors for its category
+
+            #VIN validation
             self.vin = vin #vin number of truck
-
             if vin: #if vin is not None
-                if len(vin) != 17: #validation of value
-                    raise InvalidVinError("VIN number is length 17")#tracking error
+                if len(vin) != 17:
+                    if "vin" not in errors: # if no previous errors in dictionary initiallize a list to hold vin errors
+                        errors["vin"] = []
+                    errors["vin"].append("Invalid VIN: VIN must be 17 characters long")
 
-            errors = {}
-            errors["vin"] = "vining"
-            errors["year"] = "year"
 
-            if vin == None:
-                raise TruckValidationError(errors)
             self.brand = brand
             self.make = make
 
+            #Year validation
             self.year = year
             if year:
                 if not isinstance(year,int): #checks if mileage is a interger
-                    raise Exception("Year inputted is not a number")
+                    if "year" not in errors:
+                        errors["year"] = []
+                    errors["year"].append("Year inputted is not a number")
                 if year < 1700 or year > 2100:
-                    raise InvalidYearError("Year is out of range")
+                    if "year" not in errors:
+                        errors["year"] = []
+                    errors["year"].append("Year is out of range")
 
-
+            #Mileage validation
             self.mileage = mileage
             if mileage:
                 if mileage < 0 :
-                    raise InvalidMileageError("Mileage is in the negative")
-                if not isinstance(mileage,int): #checks if mileage is a interger
-                    raise InvalidMileageError("Mileage is not a number")
+                    if "mileage" not in errors:
+                        errors["mileage"] = []
+                    errors["mileage"].append("Mileage is in the negative")
+                if not isinstance(mileage,int):
+                    if "mileage" not in errors:
+                        errors["mileage"] = []
+                    errors["mileage"].append("Mileage is not a number")
 
+            #Plate validation
             self.plate = plate
             if plate:
                 if len(plate) > 6:
-                    raise InvalidPlateError("Length of license plate number to high must be 6 or below")
+                    if "plate" not in errors:
+                        errors["plate"] = []
+                    errors["plate"].append("Length of license plate number to high must be 6 or below")
+
+            if errors:
+                raise TruckValidationError(errors) #raises all validation errors as a dictionary
 
 
-
-
-    def add_mileage(self,miles): #add mileage to truck
+    def add_mileage(self,miles):
         self.mileage += miles
 
-    def remove_mileage(self, miles):  # remove mileage to truck
+    def remove_mileage(self, miles):
         self.mileage -= miles
 
 
