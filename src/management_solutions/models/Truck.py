@@ -1,7 +1,3 @@
-from management_solutions.utils.exceptions import InvalidVinError
-from management_solutions.utils.exceptions import InvalidYearError
-from management_solutions.utils.exceptions import InvalidMileageError
-from management_solutions.utils.exceptions import InvalidPlateError
 from management_solutions.utils.exceptions import TruckValidationError
 
 
