@@ -12,6 +12,10 @@ class truck:
             #VIN validation
             self.vin = vin #vin number of truck
             if vin: #if vin is not None
+                if not isinstance(vin,str):
+                    if "vin" not in errors: # if no previous errors in dictionary initiallize a list to hold vin errors
+                        errors["vin"] = []
+                    errors["vin"].append("Invalid VIN: VIN must be a string")
                 if len(vin) != 17:
                     if "vin" not in errors: # if no previous errors in dictionary initiallize a list to hold vin errors
                         errors["vin"] = []
@@ -24,10 +28,10 @@ class truck:
             #Year validation
             self.year = year
             if year:
-                if not isinstance(year,int): #checks if mileage is a interger
+                if not isinstance(year,int): #checks if year is a interger
                     if "year" not in errors:
                         errors["year"] = []
-                    errors["year"].append("Year inputted is not a number")
+                    errors["year"].append("Year inputted is not a valid number")
                 elif year < 1700 or year > 2100: #if year is a number validate further
                     if "year" not in errors:
                         errors["year"] = []
@@ -39,7 +43,7 @@ class truck:
                 if not isinstance(mileage,int):
                     if "mileage" not in errors:
                         errors["mileage"] = []
-                    errors["mileage"].append("Mileage is not a number")
+                    errors["mileage"].append("Mileage is not a valid number")
                 elif mileage < 0 :
                     if "mileage" not in errors:
                         errors["mileage"] = []
@@ -49,6 +53,10 @@ class truck:
             #Plate validation
             self.plate = plate
             if plate:
+                if not isinstance(plate,str): #checks if plate is a string
+                    if "plate" not in errors:
+                        errors["plate"] = []
+                    errors["plate"].append("License plate should be a string")
                 if len(plate) > 6:
                     if "plate" not in errors:
                         errors["plate"] = []

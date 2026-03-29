@@ -1,8 +1,4 @@
 from management_solutions.models.Truck import truck
-from management_solutions.utils.exceptions import InvalidVinError
-from management_solutions.utils.exceptions import InvalidYearError
-from management_solutions.utils.exceptions import InvalidMileageError
-from management_solutions.utils.exceptions import InvalidPlateError
 from management_solutions.utils.exceptions import TruckValidationError
 
 def get_truck_input():
@@ -47,16 +43,3 @@ def new_truck(kwargs): #method to create truck object
                 print(message)
         #iterate through the dictionary and print errors
 
-
-    except InvalidVinError as e:
-        print(e)
-        return None
-    except InvalidYearError as e:
-        print(e)
-        return None
-    except InvalidMileageError as e:
-        print(e)
-        return None
-    except InvalidPlateError as e:
-        print(e)
-        return None
