@@ -5,7 +5,7 @@ from management_solutions.utils.Truck_util import new_truck
 #testing code:
 #truck1 = new_truck(get_truck_input())
 
-testDictionary = {"vin":"12345678901234567","brand": "volvo","make": "vnl","year": 2126,"mileage": -1150,"plate": "2xe5m3"}
+testDictionary = {"vin":"1234678901234567","brand": "volvo","make": "vnl","year": 2126,"mileage": -1150,"plate": "2xe5m3"}
 TruckTest = new_truck(testDictionary)
 
 trucktest1 = truck()
