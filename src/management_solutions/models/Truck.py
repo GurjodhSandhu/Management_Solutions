@@ -1,4 +1,5 @@
 from management_solutions.utils.exceptions import TruckValidationError
+from management_solutions.utils.validation import validate_int
 
 
 class truck:
@@ -6,14 +7,18 @@ class truck:
             errors = {} #dictionary to hold validation errors | each key (parameter) keeps a list of errors for its category
 
             self.vin = vin #vin number of truck
-            self.validate_vin(errors,vin)
             self.brand = brand
             self.make = make
-            self.validate_year(errors,year)
+            self.year = year
             self.mileage = mileage
-            self.validate_mileage(errors,mileage)
             self.plate = plate
+
+            self.validate_vin(errors,vin)
+            self.validate_year(errors,year)
+            self.validate_mileage(errors,mileage)
             self.validate_plate(errors, plate)
+
+
             if errors:
                 raise TruckValidationError(errors) #raises all validation errors as a dictionary
 
@@ -33,13 +38,9 @@ class truck:
 
     def validate_year(self,errors: dict, year):
         if year:
-            if not isinstance(year, int):  # checks if year is a integer
-                if year.isdigit():
-                    self.year = int(year)
-                else:
-                    errors.setdefault("year", []).append("Year inputted is not a valid number")
-            elif year < 1700 or year > 2100:  # if year is a number validate further
-                errors.setdefault("year", []).append("Year is out of range")
+            if validate_int(self,errors,"year"):
+                if self.year < 1700 or self.year > 2100:  # if year is a number validate further
+                    errors.setdefault("year", []).append("Year is out of range")
 
     def validate_mileage(self,errors: dict, mileage):
         if mileage:
