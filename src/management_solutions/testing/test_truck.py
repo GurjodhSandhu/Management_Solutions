@@ -1,5 +1,5 @@
 from management_solutions.models.Truck import truck
-from management_solutions.utils.exceptions import TruckValidationError
+from management_solutions.utils.exceptions import ValidationError
 test_case = {"vin": "1A3456C890VS345A7", "brand": "Volvo", "make": "DB4F", "year": 2026, "mileage": 11500,
                      "plate": "V2A3D2"}
 
@@ -8,7 +8,7 @@ def test_year(value, expected_error): #give input value and expected error
         test_case = {"vin": "1A3456C890VS345A7", "brand": "Volvo", "make": "DB4F", "year": value, "mileage": 11500,
                      "plate": "V2A3D2"}
         truck(**test_case)
-    except TruckValidationError as e:
+    except ValidationError as e:
         if e.errors["year"][0] == expected_error: #if expected error is caught return pass flag
             print(f"Passed || input: {value} || error: {expected_error}")
             return 1 #pass 0
@@ -24,7 +24,7 @@ def test_vin(value, expected_error): #give input value and expected error
         test_case = {"vin": value, "brand": "Volvo", "make": "DB4F", "year": 20015, "mileage": 11500,
                      "plate": "V2A3D2"}
         truck(**test_case)
-    except TruckValidationError as e:
+    except ValidationError as e:
         if e.errors["vin"][0] == expected_error: #if expected error is caught return pass flag
             print(f"Passed || input: {value} || error: {expected_error}")
             return 1 #pass 0
@@ -39,7 +39,7 @@ def test_mileage(value, expected_error): #give input value and expected error
         test_case = {"vin": "1A3456C890VS345A7", "brand": "Volvo", "make": "DB4F", "year": 2026, "mileage": value,
                      "plate": "V2A3D2"}
         truck(**test_case)
-    except TruckValidationError as e:
+    except ValidationError as e:
         if e.errors["mileage"][0] == expected_error: #if expected error is caught return pass flag
             print(f"Passed || input: {value} || error: {expected_error}")
             return 1 #pass 0
@@ -55,7 +55,7 @@ def test_plate(value, expected_error): #give input value and expected error
         test_case = {"vin": "1A3456C890VS345A7", "brand": "Volvo", "make": "DB4F", "year": 2026, "mileage": 11500,
                      "plate": value}
         truck(**test_case)
-    except TruckValidationError as e:
+    except ValidationError as e:
         if e.errors["plate"][0] == expected_error: #if expected error is caught return pass flag
             print(f"Passed || input: {value} || error: {expected_error}")
             return 1 #pass 0
@@ -115,3 +115,4 @@ test_plate("aaaaaaaaaaaaaaaa","Length of license plate number to high must be 6 
 passed = sum(plate)
 total = len(plate)
 print(f"Passed {passed} out of {total} tests")
+

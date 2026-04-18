@@ -1,37 +1,22 @@
 from management_solutions.models.Truck import truck
-from management_solutions.utils.exceptions import TruckValidationError
+from management_solutions.utils.exceptions import ValidationError
 
 def get_truck_input():
-    vin = input("VIN: ")
-    brand = input("Brand: ")
-    make = input("Make: ")
-    year = input("Year: ")
-    mileage = input("Mileage: ")
-    plate = input("Plate Number: ")
 
-    #validate inputs
-
+    fields = ["vin","brand","make","year","mileage", "plate"]
     kwargs = {}
-    if vin:
-        kwargs["vin"] = vin
-    if brand:
-        kwargs["brand"] = brand
-    if make:
-        kwargs["make"] = make
-    if year:
-        kwargs["year"] = year
-    if mileage:
-        kwargs["mileage"] = mileage
-    if plate:
-        kwargs["plate"] = plate
+    for field in fields:
+        value = input(f"{field}: ")
+        if value:
+            kwargs[field] = value
 
     return kwargs
 
-def new_truck(kwargs): #method to create truck object
+def create_truck(kwargs): #method to create truck object
     try:
         return truck(**kwargs)
 
-    except TruckValidationError as e:
+    except ValidationError as e:
         for values in e.errors.values():
             for message in values:
                 print(message)

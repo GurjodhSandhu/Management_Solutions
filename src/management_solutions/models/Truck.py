@@ -1,4 +1,4 @@
-from management_solutions.utils.exceptions import TruckValidationError
+from management_solutions.utils.exceptions import ValidationError
 from management_solutions.utils.validation import validate_int
 from management_solutions.utils.validation import validate_str
 
@@ -21,7 +21,7 @@ class truck:
             self.validate_plate(errors, plate)
 
             if errors:
-                raise TruckValidationError(errors) #raises all validation errors as a dictionary
+                raise ValidationError(errors) #raises all validation errors as a dictionary
 
     def add_mileage(self,miles):
         self.mileage += miles
