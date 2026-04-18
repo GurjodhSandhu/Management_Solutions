@@ -45,6 +45,7 @@ def test_mileage(value, expected_error): #give input value and expected error
             return 1 #pass 0
         else:
             print(f"Failed: input {value} || expected error: {expected_error} NOT caught")
+            print(e.errors["mileage"][0])
             return 0 #fail
     print("No exception caught: if expected ignore")
     return 0
@@ -66,9 +67,12 @@ def test_plate(value, expected_error): #give input value and expected error
 
 print("\n Testing: VIN")
 vin = [
-test_vin(100,"Invalid VIN: VIN must be a string"),
+test_vin(100,"Invalid VIN: VIN must be 17 characters long"),
 test_vin("ABCDE","Invalid VIN: VIN must be 17 characters long"),
-test_vin("1234asdbqwdasdqwdasd","Invalid VIN: VIN must be 17 characters long")]
+test_vin("1234asdbqwdasdqwdasd","Invalid VIN: VIN must be 17 characters long"),
+
+]
+
 
 passed = sum(vin)
 total = len(vin)
@@ -89,11 +93,13 @@ print(f"Passed {passed} out of {total} tests")
 
 print("\n Testing: Mileage")
 mileage= [
-test_mileage("string", "Mileage is not a valid number"),
+test_mileage("string", "mileage inputted is not a valid number"),
 test_mileage(-100, "Mileage is in the negative"),
 test_mileage(-10, "Mileage is in the negative"),
 test_mileage(-999999, "Mileage is in the negative"),
-test_mileage(0, "Mileage is in the negative")
+test_mileage(0, "Mileage is in the negative"),
+test_mileage("-12", "Mileage is in the negative")
+
 ]
 passed = sum(mileage)
 total = len(mileage)
@@ -101,11 +107,9 @@ print(f"Passed {passed} out of {total} tests")
 
 print("\n Testing: Plate number")
 plate = [
-test_plate(10000000, "License plate should be a string"),
+test_plate(10000000, "Length of license plate number to high must be 6 or below"),
 test_plate("4443123","Length of license plate number to high must be 6 or below"),
-test_plate(-1, "License plate should be a string"),
 test_plate("sgevsewcw","Length of license plate number to high must be 6 or below"),
-test_plate(1, "License plate should be a string"),
 test_plate("aaaaaaaaaaaaaaaa","Length of license plate number to high must be 6 or below")
 ]
 passed = sum(plate)

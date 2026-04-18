@@ -1,9 +1,10 @@
 from management_solutions.utils.exceptions import TruckValidationError
 from management_solutions.utils.validation import validate_int
+from management_solutions.utils.validation import validate_str
 
 
 class truck:
-    def __init__(self,vin = None, brand = None, make= None, year= None, mileage= None, plate = "Asda"):
+    def __init__(self,vin = None, brand = None, make= None, year= None, mileage= None, plate = None):
             errors = {} #dictionary to hold validation errors | each key (parameter) keeps a list of errors for its category
 
             self.vin = vin #vin number of truck
@@ -18,10 +19,8 @@ class truck:
             self.validate_mileage(errors,mileage)
             self.validate_plate(errors, plate)
 
-
             if errors:
                 raise TruckValidationError(errors) #raises all validation errors as a dictionary
-
 
     def add_mileage(self,miles):
         self.mileage += miles
@@ -31,30 +30,24 @@ class truck:
 
     def validate_vin(self, errors: dict, vin):
         if vin:  # if vin is not None
-            if not isinstance(vin, str):
-                errors.setdefault("vin", []).append("Invalid VIN: VIN must be a string")
-            elif len(vin) != 17:
-                errors.setdefault("vin", []).append("Invalid VIN: VIN must be 17 characters long")
+            if validate_str(self, errors, "vin"):
+                if len(self.vin) != 17:
+                    errors.setdefault("vin", []).append("Invalid VIN: VIN must be 17 characters long")
 
     def validate_year(self,errors: dict, year):
         if year:
-            if validate_int(self,errors,"year"):
+            if validate_int(self,errors,"year"): #if year is a int continue
                 if self.year < 1700 or self.year > 2100:  # if year is a number validate further
                     errors.setdefault("year", []).append("Year is out of range")
 
     def validate_mileage(self,errors: dict, mileage):
         if mileage:
-            if not isinstance(mileage, int):
-                if mileage.isdigit():
-                    self.mileage = int(mileage)
-                else:
-                    errors.setdefault("mileage", []).append("Mileage is not a valid number")
-            elif mileage < 0:
-                errors.setdefault("mileage", []).append("Mileage is in the negative")
+            if validate_int(self,errors,"mileage"): #if year is a int continue
+                if self.mileage < 0:
+                    errors.setdefault("mileage", []).append("Mileage is in the negative")
 
     def validate_plate(self,errors: dict, plate):
         if plate:
-            if not isinstance(plate, str):  # checks if plate is a string
-                errors.setdefault("plate", []).append("License plate should be a string")
-            elif len(plate) > 6:
-                errors.setdefault("plate", []).append("Length of license plate number to high must be 6 or below")
+            if validate_str(self,errors, "plate"):
+                if len(self.plate) > 6:
+                    errors.setdefault("plate", []).append("Length of license plate number to high must be 6 or below")
