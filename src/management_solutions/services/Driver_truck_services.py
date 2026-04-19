@@ -28,3 +28,33 @@ def assign_driver_to_truck(driver_id,truck_id,trucks,drivers):
     return f"driver: {driver_id} assigned to truck: {truck_id}"
 
 
+def unassign_truck_from_driver(driver_id, trucks, drivers):  # remove driver-truck link via driver
+    # lookup driver
+    driver = drivers.get(driver_id)
+    if not driver:
+        return f"driver {driver_id} doesnt exist"
+
+    # driver has no truck assigned
+    if driver.assigned_truck_id is None:
+        return f"driver {driver_id} is not assigned to any truck"
+
+    # capture truck_id BEFORE clearing anything
+    truck_id = driver.assigned_truck_id
+
+    # lookup truck
+    truck = trucks.get(truck_id)
+    if not truck:
+        # clean driver anyway
+        driver.assigned_truck_id = None
+        return f"truck {truck_id} doesn't exist"
+
+    # truck has no driver (inconsistent state)
+    if truck.assigned_driver_id is None:
+        driver.assigned_truck_id = None
+        return f"truck {truck_id} has no assigned driver"
+
+    # clear both sides
+    truck.assigned_driver_id = None
+    driver.assigned_truck_id = None
+
+    return f"driver {driver_id} unassigned from truck {truck_id}"
