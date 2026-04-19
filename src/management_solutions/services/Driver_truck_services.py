@@ -58,3 +58,35 @@ def unassign_truck_from_driver(driver_id, trucks, drivers):  # remove driver-tru
     driver.assigned_truck_id = None
 
     return f"driver {driver_id} unassigned from truck {truck_id}"
+
+
+def unassign_driver_from_truck(truck_id, trucks, drivers):  # remove driver-truck link via driver
+    # lookup truck
+    truck = trucks.get(truck_id)
+    if not truck:
+        return f"truck {truck_id} doesnt exist"
+
+    # truck has no driver assigned
+    if truck.assigned_driver_id is None:
+        return f"truck {truck_id} is not assigned to any driver"
+
+    # capture driver_id BEFORE clearing anything
+    driver_id = truck.assigned_driver_id
+
+    # lookup truck
+    driver = drivers.get(driver_id)
+    if not driver:
+        # clean truck anyway
+        truck.assigned_driver_id = None
+        return f"driver {driver_id} doesn't exist| cleared trucks assigned driver"
+
+    # driver has no assigned truck (inconsistent state)
+    if driver.assigned_truck_id is None:
+        truck.assigned_driver_id = None
+        return f"driver {driver_id} has no assigned truck| cleared trucks assigned driver"
+
+    # clear both sides
+    truck.assigned_driver_id = None
+    driver.assigned_truck_id = None
+
+    return f"truck {truck_id} unassigned from driver {driver_id}"
