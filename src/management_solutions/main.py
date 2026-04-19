@@ -1,12 +1,12 @@
 from management_solutions.models.Truck import truck
 from management_solutions.utils.Truck_util import get_truck_input
 from management_solutions.utils.Truck_util import create_truck
+from management_solutions.utils.driver_util import create_driver
+from management_solutions.utils.driver_util import get_driver_input
 
 #testing code:
-#truck1 = new_truck(get_truck_input())
-
-testDictionary = {"vin":"1234678901234567","brand": "volvo","make": "vnl","year": 2126,"mileage": -1150,"plate": "2xe5m3"}
-TruckTest = create_truck(testDictionary)
-
-trucktest1 = truck()
-trucktest2 = get_truck_input()
+truck15 = create_truck({"assigned_driver_id": 15})
+driver15 = create_driver({"driver_id": 15, "driver_name": "greg"})
+driver = {driver15.driver_id: driver15} #dictionary of drivers
+print(truck15.assigned_driver_id)
+print(driver.get(truck15.assigned_driver_id).driver_name)

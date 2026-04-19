@@ -3,7 +3,7 @@ from management_solutions.utils.exceptions import ValidationError
 
 def get_truck_input():
 
-    fields = ["vin","brand","make","year","mileage", "plate"]
+    fields = ["vin","brand","make","year","mileage", "plate","assigned_driver_id"]
     kwargs = {}
     for field in fields:
         value = input(f"{field}: ")
