@@ -3,9 +3,9 @@ from management_solutions.utils.validation import validate_int
 from management_solutions.utils.validation import validate_str
 
 class truck:
-    def __init__(self,vin = None, brand = None, make= None, year= None, mileage= None, plate = None, assigned_driver_id = None):
+    def __init__(self,truck_id = None,vin = None, brand = None, make= None, year= None, mileage= None, plate = None, assigned_driver_id = None):
             errors = {} #dictionary to hold validation errors | each key (parameter) keeps a list of errors for its category
-
+            self.truck_id = truck_id
             self.vin = vin #vin number of truck
             self.brand = brand
             self.make = make
