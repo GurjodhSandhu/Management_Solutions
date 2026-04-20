@@ -27,7 +27,6 @@ def assign_driver_to_truck(driver_id,truck_id,trucks,drivers):
     driver.assigned_truck_id = truck.truck_id
     return f"driver: {driver_id} assigned to truck: {truck_id}"
 
-
 def unassign_truck_from_driver(driver_id, trucks, drivers):  # remove driver-truck link via driver
     # lookup driver
     driver = drivers.get(driver_id)
@@ -59,7 +58,6 @@ def unassign_truck_from_driver(driver_id, trucks, drivers):  # remove driver-tru
 
     return f"driver {driver_id} unassigned from truck {truck_id}"
 
-
 def unassign_driver_from_truck(truck_id, trucks, drivers):  # remove driver-truck link via driver
     # lookup truck
     truck = trucks.get(truck_id)
@@ -90,3 +88,4 @@ def unassign_driver_from_truck(truck_id, trucks, drivers):  # remove driver-truc
     driver.assigned_truck_id = None
 
     return f"truck {truck_id} unassigned from driver {driver_id}"
+

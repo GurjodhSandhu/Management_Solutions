@@ -7,18 +7,12 @@ from management_solutions.services.Driver_truck_services import assign_driver_to
 from management_solutions.services.Driver_truck_services import unassign_truck_from_driver
 
 #testing code:
-truck15 = create_truck({"truck_id": 10})
+try:
+    truck15 = create_truck({"truck_id": 10,"year": 2000})
+    truck15.mileage = 2105
+    truck15.remove_mileage()
+except ValueError as e:
+    print(e)
+
 driver15 = create_driver({"driver_id": 15, "driver_name": "greg", "assigned_truck_id": 1})
 driver16 = create_driver({"driver_id": 16, "driver_name": "gregery"})
-
-drivers = {driver15.driver_id: driver15, driver16.driver_id: driver16} #dictionary of drivers
-truckers = {truck15.truck_id: truck15} #key is truck_id which correlates to a object
-
-print(assign_driver_to_truck(15,10,truckers,drivers))
-print(drivers.get(15).assigned_truck_id)
-print(assign_driver_to_truck(16,10,truckers,drivers))
-print(drivers.get(15).assigned_truck_id)
-
-print(unassign_truck_from_driver(15,truckers,drivers))
-print(unassign_truck_from_driver(16,truckers,drivers))
-
