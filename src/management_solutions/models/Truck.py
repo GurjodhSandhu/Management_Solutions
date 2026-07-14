@@ -25,14 +25,10 @@ class truck:
     @property
     def year(self):
         return self._year
-
     @year.setter
     def year(self, value):
-        # your validation code here
-        if not isinstance(value, int):
-            raise ValueError("Year must be an integer")
-        if value < 1700 or value > 2100:
-            raise ValueError("Year is out of range")
+        # validation code here
+        self.validate_year(value)
         self._year = value
 
     @property
@@ -44,12 +40,15 @@ class truck:
         self._mileage = value
 
     def add_mileage(self,miles):
-        self._validate_miles_input(miles)
+        self._validate_miles_input(miles) #validates miles for
         self.mileage += miles
 
     def remove_mileage(self, miles):
         self._validate_miles_input(miles)
         self.mileage -= miles
+
+
+    #Validation code start ----------------------------------------------------------------------------
 
     def validate_vin(self, errors: dict, vin):
         if vin:  # if vin is not None
@@ -80,3 +79,5 @@ class truck:
             raise ValueError("Mileage must be an integer")
         if miles < 0:
             raise ValueError("Mileage cannot be negative")
+
+    #Validation code end ---------------------------------------------------------------------------------

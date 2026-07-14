@@ -83,7 +83,7 @@ year=[
 test_year("string","year inputted is not a valid number"),
 test_year(1000,"Year is out of range"),
 test_year(3000,"Year is out of range"),
-test_year("2003",None),
+test_year("2003","year inputted is not a valid number"),
 test_year(2001, None)
 
 ]
@@ -98,7 +98,7 @@ test_mileage(-100, "Mileage is in the negative"),
 test_mileage(-10, "Mileage is in the negative"),
 test_mileage(-999999, "Mileage is in the negative"),
 test_mileage(0, "Mileage is in the negative"),
-test_mileage("-12", "Mileage is in the negative")
+test_mileage("-12", "mileage inputted is not a valid number")
 
 ]
 passed = sum(mileage)

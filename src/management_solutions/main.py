@@ -1,18 +1,29 @@
-from management_solutions.models.Truck import truck
-from management_solutions.utils.Truck_util import get_truck_input
-from management_solutions.utils.Truck_util import create_truck
-from management_solutions.utils.driver_util import create_driver
-from management_solutions.utils.driver_util import get_driver_input
-from management_solutions.services.Driver_truck_services import assign_driver_to_truck
-from management_solutions.services.Driver_truck_services import unassign_truck_from_driver
+from management_solutions.database import connect
 
+conn = connect.connect_fleet()
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS trucks (
+    truck_id INTEGER PRIMARY KEY,
+    brand TEXT,
+    year INTEGER,
+    assigned_driver_id INTEGER
+);
+""")
+
+cursor.execute("""
+INSERT INTO trucks (truck_id, brand, year)
+VALUES (2, 'Chevy', 2020);
+""")
+
+conn.commit()
+conn.close()
 #testing code:
-try:
-    truck15 = create_truck({"truck_id": 10,"year": 2000})
-    truck15.mileage = 2105
-    truck15.remove_mileage()
-except ValueError as e:
-    print(e)
 
-driver15 = create_driver({"driver_id": 15, "driver_name": "greg", "assigned_truck_id": 1})
-driver16 = create_driver({"driver_id": 16, "driver_name": "gregery"})
+
+
+
+
+
+
