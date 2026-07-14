@@ -7,4 +7,3 @@ def connect_fleet():
     except sqlite3.OperationalError as e:
         raise RuntimeError("Fleet database failed to connect") from e
 
-connect_fleet()
