@@ -21,4 +21,6 @@ def create_truck(kwargs): #method to create truck object
             for message in values:
                 print(message)
         #iterate through the dictionary and print errors
+        return None
+
 

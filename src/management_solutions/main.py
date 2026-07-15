@@ -1,7 +1,8 @@
 from utils import Truck_util
 from database import truck_repository
+from utils.exceptions import ValidationError
 while True:
-    print("""Select option from below
+    print("""\n\n\nSelect option from below
 1.add truck 
 2.add driver
 3.list trucks
@@ -17,8 +18,11 @@ while True:
     option = input("select option:")
     if option == "1": #add truck
         truck = Truck_util.create_truck(Truck_util.get_truck_input()) #gets truck inputs from user creates truck object
-        print(truck)
-        truck_repository.add_truck(truck)
+        if truck == None:
+            print("\n\nFailed to add truck: Try again")
+            continue
+        truck_repository.add_truck(**truck.to_dict())
+        print("successfully added truck to database")
     elif option == "2":
         print()
     elif option == "3":

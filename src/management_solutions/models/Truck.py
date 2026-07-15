@@ -47,14 +47,26 @@ class truck:
         self._validate_miles_input(miles)
         self.mileage -= miles
 
+    def to_dict(self):
+        return {
+            "vin": self.vin,
+            "brand": self.brand,
+            "make": self.make,
+            "year": self.year,
+            "mileage": self.mileage,
+            "plate": self.plate
+        }
 
     #Validation code start ----------------------------------------------------------------------------
 
     def validate_vin(self, errors: dict, vin):
         if vin:  # if vin is not None
-            if validate_str(self, errors, "vin"):
-                if len(self.vin) != 17:
-                    errors.setdefault("vin", []).append("Invalid VIN: VIN must be 17 characters long")
+            if not isinstance(vin, str):
+                errors.setdefault("vin",[]).append("Invalid VIN: VIN must be a string")
+                return
+
+            if len(self.vin) != 17:
+                errors.setdefault("vin", []).append("Invalid VIN: VIN must be 17 characters long")
 
     def validate_year(self,errors: dict, year):
         if year:
@@ -71,15 +83,23 @@ class truck:
 
     def validate_mileage(self,errors: dict, mileage):
         if mileage:
-            if validate_int(self,errors,"mileage"): #if year is a int continue
-                if self.mileage < 0:
-                    errors.setdefault("mileage", []).append("Mileage is in the negative")
+            if not isinstance(mileage, int):
+                try:
+                    mileage = int(mileage)
+                except:
+                    errors.setdefault("mileage", []).append("mileage inputted is not a valid number")
+                    return
+            if mileage < 0:
+                errors.setdefault("mileage", []).append("Mileage is in the negative")
+                return
 
     def validate_plate(self,errors: dict, plate):
         if plate:
-            if validate_str(self,errors, "plate"):
-                if len(self.plate) > 6:
-                    errors.setdefault("plate", []).append("Length of license plate number to high must be 6 or below")
+            if not isinstance(plate, str):
+                    errors.setdefault("plate", []).append("plate inputted is not a valid string")
+                    return
+            if len(self.plate) > 6:
+                errors.setdefault("plate", []).append("Length of license plate number to high must be 6 or below")
 
     def _validate_miles_input(self, miles):
         if not isinstance(miles, int):
