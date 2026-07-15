@@ -58,9 +58,16 @@ class truck:
 
     def validate_year(self,errors: dict, year):
         if year:
-            if validate_int(self,errors,"year"): #if year is a int continue
-                if self.year < 1700 or self.year > 2100:  # if year is a number validate further
-                    errors.setdefault("year", []).append("Year is out of range")
+            if not isinstance(year, int):
+                    try:
+                        year = int(year)
+                    except:
+                        errors.setdefault("year",[]).append("year inputted is not a valid number")
+                        return
+            if year < 1700 or year > 2100:  # if year is a number validate further
+                errors.setdefault("year", []).append("Year is out of range")
+                return
+            self._year = year
 
     def validate_mileage(self,errors: dict, mileage):
         if mileage:

@@ -18,6 +18,8 @@ def test_year(value, expected_error): #give input value and expected error
     if expected_error == None:
         print(f"Passed || input: {value} || error: {expected_error}")
         return 1
+    print("No exception caught: if expected ignore")
+    return 0
 
 def test_vin(value, expected_error): #give input value and expected error
     try:
@@ -83,7 +85,7 @@ year=[
 test_year("string","year inputted is not a valid number"),
 test_year(1000,"Year is out of range"),
 test_year(3000,"Year is out of range"),
-test_year("2003","year inputted is not a valid number"),
+test_year("2003",None),
 test_year(2001, None)
 
 ]

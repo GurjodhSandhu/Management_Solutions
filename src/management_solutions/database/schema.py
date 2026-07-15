@@ -3,7 +3,7 @@ import connect
 def initialize_fleetDB():
     conn = connect.connect_fleet()
     cursor = conn.cursor()
-    cursor.execute("""CREATE TABLE IF NOT EXISTs trucks ( 
+    cursor.execute("""CREATE TABLE IF NOT EXISTS trucks ( 
     truck_id INTEGER PRIMARY KEY AUTOINCREMENT,
     vin TEXT,
     brand TEXT,

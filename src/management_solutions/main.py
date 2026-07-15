@@ -16,9 +16,9 @@ while True:
 
     option = input("select option:")
     if option == "1": #add truck
-        truck = Truck_util.get_truck_input()
-        truck_repository.add_truck(**truck)
+        truck = Truck_util.create_truck(Truck_util.get_truck_input()) #gets truck inputs from user creates truck object
         print(truck)
+        truck_repository.add_truck(truck)
     elif option == "2":
         print()
     elif option == "3":
