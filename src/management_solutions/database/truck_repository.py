@@ -1,4 +1,4 @@
-import connect
+from . import connect
 
 conn = connect.connect_fleet()
 cursor = conn.cursor()

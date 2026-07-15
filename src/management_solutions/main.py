@@ -1,3 +1,5 @@
+from utils import Truck_util
+from database import truck_repository
 while True:
     print("""Select option from below
 1.add truck 
@@ -13,22 +15,23 @@ while True:
 """)
 
     option = input("select option:")
-    if option == 1:
+    if option == "1": #add truck
+        truck = Truck_util.get_truck_input()
+        truck_repository.add_truck(**truck)
+        print(truck)
+    elif option == "2":
         print()
-        #code here
-    elif option == 2:
+    elif option == "3":
         print()
-    elif option == 3:
+    elif option == "4":
         print()
-    elif option == 4:
+    elif option == "5":
         print()
-    elif option == 5:
+    elif option == "6":
         print()
-    elif option == 6:
+    elif option == "7":
         print()
-    elif option == 7:
-        print()
-    elif option == 8:
+    elif option == "8":
         break
 
 
