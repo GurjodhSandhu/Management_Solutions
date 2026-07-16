@@ -11,5 +11,6 @@ def list_all_trucks():
     with connect.connect_fleet() as conn:
         cursor = conn.cursor()
         cursor.execute("""SELECT vin,brand,make,year,mileage,plate FROM trucks""")
-        test = cursor.fetchall()
-        print(test)
+        all_trucks = cursor.fetchall()
+        print(all_trucks)
+        return all_trucks

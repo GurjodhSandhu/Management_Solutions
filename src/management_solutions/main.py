@@ -43,7 +43,11 @@ while True:
         print("succesfully printed all trucks")
 
     elif option == "4":
-        print()
+        try:
+            driver_repository.list_all_drivers()
+        except:
+            print("failed to print all drivers")
+        print("succesfully printed all drivers")
     elif option == "5":
         print()
     elif option == "6":
