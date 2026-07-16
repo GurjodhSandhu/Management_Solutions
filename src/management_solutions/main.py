@@ -1,6 +1,8 @@
 from utils import Truck_util
+
 from database import truck_repository
-from utils.exceptions import ValidationError
+from database import driver_repository
+
 while True:
     print("""\n\n\nSelect option from below
 1.add truck 
