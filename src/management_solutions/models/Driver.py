@@ -12,8 +12,7 @@ class driver:
             raise ValidationError(errors)  # raises all validation errors as a dictionary
 
 
-    def todict(self,):
-        return {"driver_id":self.driver_id,
-                "assigned_truck_id": self.assigned_truck_id,
+    def to_dict(self):
+        return {
                 "driver_name": self.driver_name,
                 "driver_licensenumber": self.driver_licensenumber}

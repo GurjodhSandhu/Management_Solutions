@@ -26,15 +26,22 @@ while True:
         truck_repository.add_truck(**truck.to_dict())
         print("successfully added truck to database")
 
-
-
     elif option == "2":
         driver_input = driver_util.get_driver_input()
         driver = driver_util.create_driver(driver_input)
-        driver_repository.add_driver(driver.todict)
-        print()
+        if driver == None:
+            print("\n\nfailed to create driver: try again")
+            continue
+        driver_repository.add_driver(**driver.to_dict())
+        print("succesfully added driver to database")
+
     elif option == "3":
-        print()
+        try:
+            truck_repository.list_all_trucks()
+        except:
+            print("failed to print all trucks")
+        print("succesfully printed all trucks")
+
     elif option == "4":
         print()
     elif option == "5":
