@@ -2,7 +2,7 @@ from management_solutions.models.Driver import driver
 from management_solutions.utils.exceptions import ValidationError
 
 def get_driver_input():
-    fields = ["driver_id"]
+    fields = ["driver_name","driver_licensenumber"]
 
     kwargs = {} #empty dictionary
     for field in fields:

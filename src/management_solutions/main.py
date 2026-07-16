@@ -1,5 +1,5 @@
 from utils import Truck_util
-
+from utils import driver_util
 from database import truck_repository
 from database import driver_repository
 
@@ -25,7 +25,13 @@ while True:
             continue
         truck_repository.add_truck(**truck.to_dict())
         print("successfully added truck to database")
+
+
+
     elif option == "2":
+        driver_input = driver_util.get_driver_input()
+        driver = driver_util.create_driver(driver_input)
+        driver_repository.add_driver(driver.todict)
         print()
     elif option == "3":
         print()
