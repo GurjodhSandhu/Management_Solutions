@@ -49,7 +49,13 @@ while True:
             print("failed to print all drivers")
         print("succesfully printed all drivers")
     elif option == "5":
-        print()
+        truck = Truck_util.create_truck(Truck_util.get_truck_input())
+        truck_id = int(input("input truck id: "))
+        try:
+            truck_repository.update_trucks(truck_id,**truck.to_dict())
+        except ValueError as e:
+            print(e)
+
     elif option == "6":
         print()
     elif option == "7":

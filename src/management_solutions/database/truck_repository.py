@@ -10,7 +10,15 @@ def add_truck(vin=None,brand=None,make=None,year=None,mileage=None,plate=None):
 def list_all_trucks():
     with connect.connect_fleet() as conn:
         cursor = conn.cursor()
-        cursor.execute("""SELECT vin,brand,make,year,mileage,plate FROM trucks""")
+        cursor.execute("""SELECT truck_id,vin,brand,make,year,mileage,plate FROM trucks""")
         all_trucks = cursor.fetchall()
         print(all_trucks)
         return all_trucks
+
+def update_trucks(truck_id = None,vin=None,brand=None,make=None,year=None,mileage=None,plate=None):
+    with connect.connect_fleet() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""UPDATE trucks SET vin = ?,brand = ?,make = ?,year = ?, mileage = ?, plate = ? WHERE truck_id = ? """,(vin,brand,make,year,mileage,plate,truck_id))
+        if not cursor.fetchone():
+            raise ValueError(f"Truck with ID {truck_id} does not exist")
+        conn.commit()
