@@ -1,5 +1,6 @@
 from management_solutions.models.Truck import truck
 from management_solutions.utils.exceptions import ValidationError
+from management_solutions.database import truck_repository
 
 def get_truck_input():
 
@@ -23,4 +24,8 @@ def create_truck(kwargs): #method to create truck object
         #iterate through the dictionary and print errors
         return None
 
+def get_truck(truck_id): #function to retrieve truck from database via the truck_id
+    truck = truck_repository.retrieve_truck(truck_id)
+    truck_object = create_truck(**truck)
+    return truck_object
 

@@ -9,10 +9,11 @@ while True:
 2.add driver
 3.list trucks
 4.list drivers
-5.assign driver to truck
+5.update truck info
 6.unassign driver from truck 
 7.unassign truck from driver
-8.exit
+8.assign driver to truck
+9.exit
 ----------
 
 """)
@@ -60,7 +61,9 @@ while True:
         print()
     elif option == "7":
         print()
-    elif option == "8":
+    elif option == "7":
+        print()
+    elif option == "9":
         break
 
 
