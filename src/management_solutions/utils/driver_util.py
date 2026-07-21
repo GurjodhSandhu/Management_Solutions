@@ -22,6 +22,13 @@ def create_driver(kwarg):
         # iterate through the dictionary and print errors
     return None
 
+def add_driver(driver): #add truck objects information into the database
+    try:
+        driver_repository.add_driver(**driver.to_dict())
+        return ("succesfully added driver")
+    except:
+        return ("failed to add driver")
+
 def get_driver(driver_id): #function to create a driver object from database via the driver_id
     try:
         driver = driver_repository.retrieve_driver(driver_id)
@@ -30,14 +37,6 @@ def get_driver(driver_id): #function to create a driver object from database via
 
     except ValueError as e:
         raise ValueError(f"Failed to get driver object from database: {e}")
-
-
-def add_driver(driver): #add truck objects information into the database
-    try:
-        driver_repository.add_driver(**driver.to_dict())
-        return ("succesfully added driver")
-    except:
-        return ("failed to add driver")
 
 def list_drivers():
     try:

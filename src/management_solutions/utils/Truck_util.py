@@ -24,6 +24,13 @@ def create_truck(kwargs): #method to create truck object
         #iterate through the dictionary and print errors
         return None
 
+def add_truck(truck): #add truck objects information into the database
+    try:
+        truck_repository.add_truck(**truck.to_dict())
+        return ("succesfully added truck")
+    except:
+        return ("failed to add truck")
+
 def get_truck(truck_id): #function to create a truck object from database via the truck_id RETRIEVE TRUCK
     try:
         truck = truck_repository.retrieve_truck(truck_id)
@@ -32,13 +39,6 @@ def get_truck(truck_id): #function to create a truck object from database via th
 
     except ValueError as e:
         raise ValueError(f"Failed to get truck object from database: {e}")
-
-def add_truck(truck): #add truck objects information into the database
-    try:
-        truck_repository.add_truck(**truck.to_dict())
-        return ("succesfully added truck")
-    except:
-        return ("failed to add truck")
 
 def list_trucks():
     try:

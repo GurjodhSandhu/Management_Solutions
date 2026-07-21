@@ -11,15 +11,16 @@ while True:
 3.list trucks
 4.list drivers
 5.update truck info
-6.unassign driver from truck 
-7.unassign truck from driver
-8.assign driver to truck
+6.update driver info
+7.
+8.
 9.exit
 ----------
 
 """)
     test_truck = truck(None,"12345678910234567","ford","shelby","2001",20000,"ab632s")
     test_driver = driver(None,None,"bob","9723")
+
     option = input("select option:")
     if option == "1": #add truck to database
         print(Truck_util.add_truck(test_truck))
