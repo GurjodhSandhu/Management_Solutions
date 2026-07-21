@@ -11,7 +11,8 @@ class driver:
         if errors:
             raise ValidationError(errors)  # raises all validation errors as a dictionary
 
-
+    def print(self):
+        print(self.driver_name)
     def to_dict(self):
         return {
                 "driver_name": self.driver_name,

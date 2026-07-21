@@ -25,12 +25,12 @@ def update_trucks(truck_id = None,vin=None,brand=None,make=None,year=None,mileag
 
 def retrieve_truck(truck_id):
     with connect.connect_fleet() as conn:
-        parameters = ["truck_id","vin","brand","make","year","mileage","plate"]
+        parameters = ["truck_id","vin","brand","make","year","mileage","plate","assigned_driver_id"]
         cursor = conn.cursor()
         cursor.execute("""Select * FROM trucks WHERE truck_id = ?""",(truck_id))
-        if not cursor.fetchone():
-            raise ValueError(f"Truck with ID {truck_id} does not exist")
         #take list output format as a dict into dic
-        values = cursor.fetchall()
+        values = cursor.fetchone()
+        if values is None:
+            raise ValueError(f"Truck with ID {truck_id} does not exist")
         dict = zip(parameters,values) #create a dictionary of the truck information for the give truck id
         return dict

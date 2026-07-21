@@ -65,7 +65,10 @@ while True:
         except ValueError as e:
             print(e)
     elif option == "7":
-        print()
+        try:
+            print(driver_repository.retrieve_driver("1"))
+        except ValueError as e:
+            print(e)
     elif option == "7":
         print()
     elif option == "9":
