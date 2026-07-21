@@ -9,7 +9,6 @@ def get_driver_input():
         value = input(f'{field}: ')
         if value:
             kwargs[field] = value
-
     return kwargs
 
 

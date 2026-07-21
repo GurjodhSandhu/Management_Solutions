@@ -19,3 +19,12 @@ def list_all_drivers():
         cursor.execute("""SELECT * FROM drivers""")
         all_drivers = cursor.fetchall()
         print(all_drivers)
+
+def update_driver(driver_id = None,driver_name = None, driver_licensenumber=None):
+    with connect.connect_fleet() as conn:
+        cursor = conn.cursor()
+        cursor.execute("""UPDATE drivers SET driver_name = ?, driver_licensenumber = ? WHERE driver_id = ?""",(driver_name,driver_licensenumber,driver_id))
+        if cursor.rowcount == 0:
+            raise ValueError(f"Driver with ID {driver_id} does not exist")
+        conn.commit()
+

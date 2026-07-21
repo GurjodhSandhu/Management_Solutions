@@ -58,7 +58,12 @@ while True:
             print(e)
 
     elif option == "6":
-        print()
+        driver = driver_util.create_driver(driver_util.get_driver_input())
+        driver_id = int(input("input driver id: "))
+        try:
+            driver_repository.update_driver(driver_id,**driver.to_dict())
+        except ValueError as e:
+            print(e)
     elif option == "7":
         print()
     elif option == "7":
