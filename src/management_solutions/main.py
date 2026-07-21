@@ -2,7 +2,7 @@ from utils import Truck_util
 from utils import driver_util
 from database import truck_repository
 from database import driver_repository
-
+from models.Truck import truck
 while True:
     print("""\n\n\nSelect option from below
 1.add truck 
@@ -17,16 +17,10 @@ while True:
 ----------
 
 """)
-
+    test_truck = truck(None,"12345678910234567","ford","shelby","2001","20000","ab632s")
     option = input("select option:")
     if option == "1": #add truck
-        truck = Truck_util.create_truck(Truck_util.get_truck_input()) #gets truck inputs from user creates truck object
-        if truck == None:
-            print("\n\nFailed to add truck: Try again")
-            continue
-        truck_repository.add_truck(**truck.to_dict())
-        print("successfully added truck to database")
-
+        print(Truck_util.add_truck(test_truck))
     elif option == "2":
         driver_input = driver_util.get_driver_input()
         driver = driver_util.create_driver(driver_input)
@@ -37,11 +31,7 @@ while True:
         print("succesfully added driver to database")
 
     elif option == "3":
-        try:
-            truck_repository.list_all_trucks()
-        except:
-            print("failed to print all trucks")
-        print("succesfully printed all trucks")
+        Truck_util.list_trucks()
 
     elif option == "4":
         try:
@@ -49,13 +39,10 @@ while True:
         except:
             print("failed to print all drivers")
         print("succesfully printed all drivers")
+
     elif option == "5":
-        truck = Truck_util.create_truck(Truck_util.get_truck_input())
         truck_id = int(input("input truck id: "))
-        try:
-            truck_repository.update_trucks(truck_id,**truck.to_dict())
-        except ValueError as e:
-            print(e)
+        Truck_util.update_trucks(truck_id,test_truck)
 
     elif option == "6":
         driver = driver_util.create_driver(driver_util.get_driver_input())

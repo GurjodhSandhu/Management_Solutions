@@ -12,7 +12,6 @@ def list_all_trucks():
         cursor = conn.cursor()
         cursor.execute("""SELECT truck_id,vin,brand,make,year,mileage,plate FROM trucks""")
         all_trucks = cursor.fetchall()
-        print(all_trucks)
         return all_trucks
 
 def update_trucks(truck_id = None,vin=None,brand=None,make=None,year=None,mileage=None,plate=None):
