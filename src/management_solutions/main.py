@@ -3,6 +3,7 @@ from utils import driver_util
 from database import truck_repository
 from database import driver_repository
 from models.Truck import truck
+from models.Driver import driver
 while True:
     print("""\n\n\nSelect option from below
 1.add truck 
@@ -17,46 +18,38 @@ while True:
 ----------
 
 """)
-    test_truck = truck(None,"12345678910234567","ford","shelby","2001","20000","ab632s")
+    test_truck = truck(None,"12345678910234567","ford","shelby","2001",20000,"ab632s")
+    test_driver = driver(None,None,"bob","9723")
     option = input("select option:")
-    if option == "1": #add truck
+    if option == "1": #add truck to database
         print(Truck_util.add_truck(test_truck))
-    elif option == "2":
-        driver_input = driver_util.get_driver_input()
-        driver = driver_util.create_driver(driver_input)
-        if driver == None:
-            print("\n\nfailed to create driver: try again")
-            continue
-        driver_repository.add_driver(**driver.to_dict())
-        print("succesfully added driver to database")
 
-    elif option == "3":
+    elif option == "2": #add driver to database
+        driver_util.add_driver(test_driver)
+
+    elif option == "3": #list all trucks
         Truck_util.list_trucks()
 
-    elif option == "4":
-        try:
-            driver_repository.list_all_drivers()
-        except:
-            print("failed to print all drivers")
-        print("succesfully printed all drivers")
+    elif option == "4": #list all drivers
+       driver_util.list_drivers()
 
-    elif option == "5":
-        truck_id = int(input("input truck id: "))
-        Truck_util.update_trucks(truck_id,test_truck)
+    elif option == "5": #update a truck in database via a changes dictionary
+        test_truck = Truck_util.get_truck(14)
+        test_truck.add_mileage(6000)
+        changes = {"mileage": test_truck.mileage}
+        Truck_util.update_trucks(test_truck.truck_id,changes)
+        Truck_util.list_trucks()
 
-    elif option == "6":
-        driver = driver_util.create_driver(driver_util.get_driver_input())
-        driver_id = int(input("input driver id: "))
-        try:
-            driver_repository.update_driver(driver_id,**driver.to_dict())
-        except ValueError as e:
-            print(e)
+    elif option == "6": #upload driver changes into database
+        test_driver = driver_util.get_driver(2)
+        test_driver.driver_name = "name"
+        changes = {"driver_name": test_driver.driver_name}
+        driver_util.update_drivers(test_driver.driver_id,changes)
+        driver_util.list_drivers()
+
     elif option == "7":
-        try:
-            print(driver_repository.retrieve_driver("1"))
-        except ValueError as e:
-            print(e)
-    elif option == "7":
+        print()
+    elif option == "8":
         print()
     elif option == "9":
         break

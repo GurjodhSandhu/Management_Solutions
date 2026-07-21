@@ -27,10 +27,11 @@ def create_truck(kwargs): #method to create truck object
 def get_truck(truck_id): #function to create a truck object from database via the truck_id RETRIEVE TRUCK
     try:
         truck = truck_repository.retrieve_truck(truck_id)
+        truck_object = create_truck(truck)
+        return truck_object
+
     except ValueError as e:
-        print(e)
-    truck_object = create_truck(**truck)
-    return truck_object
+        raise ValueError(f"Failed to get truck object from database: {e}")
 
 def add_truck(truck): #add truck objects information into the database
     try:
@@ -45,8 +46,8 @@ def list_trucks():
     except ValueError as e:
         print(e)
 
-def update_trucks(truck_id,truck):
+def update_trucks(truck_id,changes): #take a dictionary of changes and updates the database of trucks
     try:
-        truck_repository.update_trucks(truck_id,**truck)
+        truck_repository.update_trucks(truck_id,**changes)
     except ValueError as e:
-        print(e)
+        print(e + "failed to update truck")
