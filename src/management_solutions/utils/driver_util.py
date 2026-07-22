@@ -1,4 +1,5 @@
-from management_solutions.models.Driver import driver
+from pydantic import BaseModel
+from management_solutions.models.Driver import Driver
 from management_solutions.utils.exceptions import ValidationError
 from management_solutions.database import driver_repository
 
@@ -14,7 +15,7 @@ def get_driver_input():
 
 def create_driver(kwarg):
     try:
-        return driver(**kwarg)
+        return Driver(**kwarg)
     except ValidationError as e:
         for values in e.errors.values():
             for message in values:
@@ -24,7 +25,7 @@ def create_driver(kwarg):
 
 def add_driver(driver): #add truck objects information into the database
     try:
-        driver_repository.add_driver(**driver.to_dict())
+        driver_repository.add_driver(**driver.model_dump(exclude={"driver_id","assigned_truck_id"}))
         return ("succesfully added driver")
     except:
         return ("failed to add driver")

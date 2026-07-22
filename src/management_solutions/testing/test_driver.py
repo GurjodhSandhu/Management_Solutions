@@ -1,5 +1,5 @@
-from management_solutions.models.Driver import driver
+from management_solutions.models.Driver import Driver
 
-driver1 = driver("dc21")
+driver1 = Driver("dc21")
 
 print(driver1.driver_id)

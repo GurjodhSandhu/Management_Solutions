@@ -12,7 +12,6 @@ def add_driver(driver_name=None,driver_licensenumber=None):
         (driver_name,driver_licensenumber))
         conn.commit()
 
-
 def list_all_drivers():
     with connect.connect_fleet() as conn:
         cursor = conn.cursor()
