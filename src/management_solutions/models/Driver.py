@@ -9,9 +9,3 @@ class Driver(BaseModel):
     driver_licensenumber: Annotated[str|None, Field(min_length=4)] = None
 
 
-try:
-    driving = Driver(driver_id=1,assigned_truck_id=1,
-                     driver_licensenumber="1234",driver_name="faksssssssssssssssssssssssssssssssssssssssse name")
-    print(driving)
-except ValidationError as e:
-    print(e)

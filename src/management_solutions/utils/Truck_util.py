@@ -1,5 +1,5 @@
-from management_solutions.models.Truck import truck
-from management_solutions.utils.exceptions import ValidationError
+from management_solutions.models.Truckv2 import Truck
+from pydantic import ValidationError
 from management_solutions.database import truck_repository
 
 def get_truck_input():
@@ -15,7 +15,7 @@ def get_truck_input():
 
 def create_truck(kwargs): #method to create truck object
     try:
-        return truck(**kwargs)
+        return Truck(**kwargs)
 
     except ValidationError as e:
         for values in e.errors.values():
@@ -26,10 +26,10 @@ def create_truck(kwargs): #method to create truck object
 
 def add_truck(truck): #add truck objects information into the database
     try:
-        truck_repository.add_truck(**truck.to_dict())
+        truck_repository.add_truck(**truck.model_dump(exclude={"truck_id","assigned_driver_id"}))
         return ("succesfully added truck")
-    except:
-        return ("failed to add truck")
+    except Exception as e:
+        return f"failed to add truck: {e}"
 
 def get_truck(truck_id): #function to create a truck object from database via the truck_id RETRIEVE TRUCK
     try:
@@ -50,4 +50,4 @@ def update_trucks(truck_id,changes): #take a dictionary of changes and updates t
     try:
         truck_repository.update_trucks(truck_id,**changes)
     except ValueError as e:
-        print(e + "failed to update truck")
+       return f"failed to update truck: {e}"

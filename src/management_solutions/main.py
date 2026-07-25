@@ -3,6 +3,7 @@ from utils import driver_util
 from database import truck_repository
 from database import driver_repository
 from models.Truck import truck
+from models.Truckv2 import Truck
 from models.Driver import Driver
 while True:
     print("""\n\n\nSelect option from below
@@ -18,8 +19,9 @@ while True:
 ----------
 
 """)
-    test_truck = truck(None,"12345678910234567","ford","shelby","2001",20000,"ab632s")
+    #test_truck = truck(None,"12345678910234567","ford","shelby","2001",20000,"ab632s")
     test_driver = Driver(driver_name = "newpydantic", driver_licensenumber= "9723")
+    test_truck = Truck(vin="1234asdfqwer12345", brand="Volvo", make="DB4F", year=2020, mileage=1500,plate="V2A3D2")
 
     option = input("select option:")
     if option == "1": #add truck to database
@@ -35,17 +37,15 @@ while True:
        driver_util.list_drivers()
 
     elif option == "5": #update a truck in database via a changes dictionary
-        test_truck = Truck_util.get_truck(14)
+        test_truck = Truck_util.get_truck(17)
         test_truck.add_mileage(6000)
-        changes = {"mileage": test_truck.mileage}
-        Truck_util.update_trucks(test_truck.truck_id,changes)
+        Truck_util.update_trucks(test_truck.truck_id,test_truck.model_dump(exclude={"truck_id","assigned_driver_id"}))
         Truck_util.list_trucks()
 
     elif option == "6": #upload driver changes into database
         test_driver = driver_util.get_driver(4)
-        test_driver.driver_name = "name"
-        changes = {"driver_name": test_driver.driver_name}
-        driver_util.update_drivers(test_driver.driver_id,changes)
+        test_driver.driver_name = "what"
+        driver_util.update_drivers(test_driver.driver_id,test_driver.model_dump(exclude={"driver_id","assigned_truck_id"}))
         driver_util.list_drivers()
 
     elif option == "7":
