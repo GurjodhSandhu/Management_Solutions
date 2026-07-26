@@ -1,6 +1,7 @@
 from management_solutions.models.driver import Driver
 from management_solutions.exceptions import DriverServiceError
 from management_solutions.database import driver_repository
+from pydantic import ValidationError
 
 def get_driver_input():
     fields = ["driver_name","driver_licensenumber"]
