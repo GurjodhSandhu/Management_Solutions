@@ -28,5 +28,3 @@ class Truck(BaseModel):
         if self.mileage - miles < 0:
             raise ValueError("mileage cannot be negative")
         self.mileage -= miles
-
-

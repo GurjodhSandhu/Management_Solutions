@@ -3,3 +3,7 @@ class ValidationError(Exception):
         self.errors = errors_dict
         super().__init__("Validation failed")
 
+class TruckServiceError(Exception):
+    pass
+class DriverServiceError(Exception):
+    pass

@@ -1,5 +1,4 @@
-from management_solutions.utils.exceptions import ValidationError
-from pydantic import BaseModel,Field, ValidationError
+from pydantic import BaseModel,Field
 from typing import Annotated
 
 class Driver(BaseModel):

@@ -1,5 +1,5 @@
-from management_solutions.models.Truck import truck
-from management_solutions.utils.exceptions import ValidationError
+from management_solutions.models.truck import truck
+from management_solutions.exceptions import ValidationError
 test_case = {"vin": "1A3456C890VS345A7", "brand": "Volvo", "make": "DB4F", "year": 2026, "mileage": 11500,
                      "plate": "V2A3D2"}
 

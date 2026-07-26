@@ -1,10 +1,7 @@
-from utils import Truck_util
-from utils import driver_util
-from database import truck_repository
-from database import driver_repository
-from models.Truck import truck
-from models.Truckv2 import Truck
-from models.Driver import Driver
+from service import truck_util
+from service import driver_util
+from models.truck import Truck
+from models.driver import Driver
 while True:
     print("""\n\n\nSelect option from below
 1.add truck 
@@ -25,28 +22,39 @@ while True:
 
     option = input("select option:")
     if option == "1": #add truck to database
-        print(Truck_util.add_truck(test_truck))
+        print(truck_util.add_truck(test_truck))
 
     elif option == "2": #add driver to database
         print(driver_util.add_driver(test_driver))
 
     elif option == "3": #list all trucks
-        Truck_util.list_trucks()
+        truck_util.list_trucks()
 
     elif option == "4": #list all drivers
-       driver_util.list_drivers()
+        try:
+            driver_util.list_drivers()
+        except Exception as e:
+            print(e)
 
     elif option == "5": #update a truck in database via a changes dictionary
-        test_truck = Truck_util.get_truck(17)
-        test_truck.add_mileage(6000)
-        Truck_util.update_trucks(test_truck.truck_id,test_truck.model_dump(exclude={"truck_id","assigned_driver_id"}))
-        Truck_util.list_trucks()
+        try:
+            test_truck = truck_util.get_truck(17)
+            test_truck.add_mileage(6000)
+            truck_util.update_trucks(test_truck.truck_id, test_truck.model_dump(exclude={"truck_id", "assigned_driver_id"}))
+            truck_util.list_trucks()
+        except Exception as e:
+            print(e)
 
     elif option == "6": #upload driver changes into database
-        test_driver = driver_util.get_driver(4)
-        test_driver.driver_name = "what"
-        driver_util.update_drivers(test_driver.driver_id,test_driver.model_dump(exclude={"driver_id","assigned_truck_id"}))
-        driver_util.list_drivers()
+        try:
+            test_driver = driver_util.get_driver()
+            test_driver.driver_name = "what"
+            driver_util.update_drivers(test_driver.driver_id,test_driver.model_dump(exclude={"driver_id","assigned_truck_id"}))
+            driver_util.list_drivers()
+        except Exception as e:
+            print(e)
+
+
 
     elif option == "7":
         print()
