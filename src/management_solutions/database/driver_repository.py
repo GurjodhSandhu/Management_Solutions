@@ -1,5 +1,5 @@
 from management_solutions.database import connect
-
+import sqlite3
 
 def add_driver(driver_name=None,driver_licensenumber=None):
     with connect.connect_fleet() as conn:
@@ -26,7 +26,7 @@ def update_driver(driver_id: int,changes: dict):
 
     for key, value in changes.items():
         if key not in allowed_fields:
-            raise ValueError(f"Invalid field for update: {key}")
+            raise ValueError(f"[REPO]Invalid field for update: {key}")
         set_clauses.append(f"{key} = ?")
         params.append(value)
 
@@ -38,16 +38,21 @@ def update_driver(driver_id: int,changes: dict):
         cursor = conn.cursor()
         cursor.execute(sql, params)
         if cursor.rowcount == 0:
-            raise ValueError(f"Driver with ID {driver_id} does not exist")
+            raise ValueError(f"[REPO] Driver with ID {driver_id} does not exist")
         conn.commit()
 
 def retrieve_driver(driver_id = None):
     with connect.connect_fleet() as conn:
-        keys = ["driver_id","driver_name","driver_licensenumber","assigned_truck_id"]
+        conn.row_factory = sqlite3.Row #retrieve rows in dict format
         cursor = conn.cursor()
         cursor.execute("""SELECT * FROM drivers WHERE driver_id = ?""",(driver_id,))
         values = cursor.fetchone()
         if values is None:
-            raise ValueError(f"Driver with ID {driver_id} does not exist")
-        pairs = dict(zip(keys,values))
-        return pairs
+            raise ValueError(f"[REPO]Driver with ID {driver_id} does not exist")
+        driver = {
+            "driver_id": values["driver_id"],
+            "driver_name": values["driver_name"],
+            "driver_licensenumber": values["driver_licensenumber"],
+            "assigned_truck_id": values["assigned_truck_id"],
+        }
+        return driver

@@ -17,7 +17,7 @@ while True:
 
 """)
     #test_truck = truck(None,"12345678910234567","ford","shelby","2001",20000,"ab632s")
-    test_driver = Driver(driver_name = "newpydantic", driver_licensenumber= "9723")
+    test_driver = Driver(driver_name = "newpydantic", driver_licensenumber= "linumber12")
     test_truck = Truck(vin="1234asdfqwer12345", brand="Volvo", make="DB4F", year=2020, mileage=1500,plate="V2A3D2")
 
     option = input("select option:")
@@ -53,8 +53,6 @@ while True:
             driver_service.list_drivers()
         except Exception as e:
             print(e)
-
-
 
     elif option == "7":
         print()

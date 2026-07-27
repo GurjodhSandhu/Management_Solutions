@@ -17,9 +17,7 @@ def create_driver(kwarg):
     try:
         return Driver(**kwarg)
     except ValidationError as e:
-        for values in e.errors.values():
-            for message in values:
-                print(message)
+        print(e)
         # iterate through the dictionary and print errors
     return None
 
@@ -28,7 +26,7 @@ def add_driver(driver): #add truck objects information into the database
         driver_repository.add_driver(**driver.model_dump(exclude={"driver_id","assigned_truck_id"}))
         return ("succesfully added driver")
     except Exception as e:
-        raise DriverServiceError(f"Failed to add driver: {e}")
+        raise DriverServiceError(f"[SERVICE]Failed to add driver: {e}")
 
 def get_driver(driver_id): #function to create a driver object from database via the driver_id
     try:
@@ -37,16 +35,16 @@ def get_driver(driver_id): #function to create a driver object from database via
         return driver_object
 
     except Exception as e:
-        raise DriverServiceError(f"Failed to get driver object from database: {e}")
+        raise DriverServiceError(f"[SERVICE] Failed to get driver object from database: {e}")
 
 def list_drivers():
     try:
-        print(driver_repository.list_all_drivers())
+        return(driver_repository.list_all_drivers())
     except Exception as e:
-        raise DriverServiceError(f"Failed to list drivers: {e}")
+        raise DriverServiceError(f"[SERVICE] Failed to list drivers: {e}")
 
 def update_drivers(driver_id,changes):
     try:
-        driver_repository.update_driver(driver_id,**changes)
+        driver_repository.update_driver(driver_id,changes)
     except Exception as e:
-        raise DriverServiceError(f"Failed to update driver: {e}")
+        raise DriverServiceError(f"[SERVICE] Failed to update driver: {e}")

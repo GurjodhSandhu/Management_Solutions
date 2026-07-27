@@ -18,9 +18,7 @@ def create_truck(kwargs): #method to create truck object
         return Truck(**kwargs)
 
     except ValidationError as e:
-        for values in e.errors.values():
-            for message in values:
-                print(message)
+        print(e)
         #iterate through the dictionary and print errors
         return None
 
@@ -45,8 +43,8 @@ def list_trucks():
     except Exception as e:
         raise TruckServiceError(f"Failed to list all trucks: {e}")
 
-def update_trucks(truck_id,changes): #take a dictionary of changes and updates the database of trucks
+def update_trucks(truck_id: int,changes: dict): #take a dictionary of changes and updates the database of trucks
     try:
-        truck_repository.update_trucks(truck_id,**changes)
+        truck_repository.update_trucks(truck_id,changes)
     except Exception as e:
        raise TruckServiceError(f"Failed to update truck: {e}")
