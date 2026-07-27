@@ -28,6 +28,7 @@ def add_truck(truck): #add truck objects information into the database
         return ("succesfully added truck")
     except Exception as e:
         raise ValueError(f"Failed to add truck: {e}")
+
 def get_truck(truck_id): #function to create a truck object from database via the truck_id RETRIEVE TRUCK
     try:
         truck = truck_repository.retrieve_truck(truck_id)

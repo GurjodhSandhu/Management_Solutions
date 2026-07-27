@@ -39,13 +39,3 @@ def clear_truck_assigned_driver(truck_id: int):
     driver_service.update_drivers(assigned_driver_id,{"assigned_truck_id": None})
     return "successfully cleared trucks assigned driver"
 
-assign_driver_to_truck(1, 1)
-
-
-try:
-    assign_driver_to_truck(1, 1)
-except Exception as e:
-    print(e)
-
-print(driver_service.list_drivers())
-print(truck_service.list_trucks())
