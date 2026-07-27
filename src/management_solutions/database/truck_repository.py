@@ -10,7 +10,7 @@ def add_truck(vin=None,brand=None,make=None,year=None,mileage=None,plate=None):
 def list_all_trucks():
     with connect.connect_fleet() as conn:
         cursor = conn.cursor()
-        cursor.execute("""SELECT truck_id,vin,brand,make,year,mileage,plate FROM trucks""")
+        cursor.execute("""SELECT * FROM trucks""")
         all_trucks = cursor.fetchall()
         return all_trucks
 
