@@ -1,7 +1,6 @@
 from exceptions import DriverServiceError
 from management_solutions.service import truck_service, driver_service
 
-
 def assign_driver_to_truck(truck_id: int,driver_id: int):
     truck = truck_service.get_truck(truck_id)
     driver = driver_service.get_driver(driver_id)
@@ -17,8 +16,6 @@ def assign_driver_to_truck(truck_id: int,driver_id: int):
 
     driver_service.update_drivers(driver_id,{"assigned_truck_id": truck_id})
     truck_service.update_trucks(truck_id,{"assigned_driver_id": driver_id})
-
-
 
 def clear_driver_assigned_truck(driver_id: int):
     driver = driver_service.get_driver(driver_id) #retrieve driver object via provided driver_id

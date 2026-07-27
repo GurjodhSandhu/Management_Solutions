@@ -3,6 +3,7 @@ import os
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))  # directory of connect.py
 DB_PATH = os.path.join(BASE_DIR, "fleet.db")           # database inside /database
+Test_DB_PATH = os.path.join(BASE_DIR, "fleet_test.db")
 def connect_fleet():
     try:
         return sqlite3.connect(DB_PATH)
