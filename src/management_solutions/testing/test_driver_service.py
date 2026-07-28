@@ -15,4 +15,3 @@ def test_driver_dervice_add_driver():
 def test_driver_service_get_driver():
     driver_service.get_driver(1)
     print(driver_service.list_drivers())
-    

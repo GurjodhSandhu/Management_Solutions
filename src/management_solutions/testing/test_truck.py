@@ -61,3 +61,13 @@ def test_truck_invalid_plate_type():
 def test_truck_invalid_plate_length():
     with pytest.raises(ValidationError):
         Truck(plate="abc123qwe4234fsdf234aaaa")
+
+def test_truck_valid_status():
+    Truck(truck_status="available")
+    Truck(truck_status="unavailable")
+    Truck(truck_location="on_route")
+
+def test_truck_invalid_status():
+    with pytest.raises(ValidationError):
+        Truck(truck_location="On_route")
+        Truck(truck_status="avaailble")
