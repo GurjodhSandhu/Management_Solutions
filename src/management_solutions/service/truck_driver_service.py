@@ -1,4 +1,3 @@
-from exceptions import DriverServiceError
 from management_solutions.service import truck_service, driver_service
 
 def assign_driver_to_truck(truck_id: int,driver_id: int):

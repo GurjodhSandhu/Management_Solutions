@@ -1,10 +1,10 @@
 from management_solutions.database import connect
 import sqlite3
 
-def add_truck(vin=None,brand=None,make=None,year=None,mileage=None,plate=None):
+def add_truck(vin=None,brand=None,make=None,year=None,mileage=None,plate=None,truck_status=None,truck_location=None):
     with connect.connect_fleet() as conn:
         cursor = conn.cursor()
-        cursor.execute("""INSERT INTO trucks (vin,brand,make,year,mileage,plate) VALUES (?,?,?,?,?,?)""",(vin,brand,make,year,mileage,plate))
+        cursor.execute("""INSERT INTO trucks (vin,brand,make,year,mileage,plate,truck_status,truck_location) VALUES (?,?,?,?,?,?,?,?)""",(vin,brand,make,year,mileage,plate,truck_status,truck_location))
         conn.commit()
 
 def list_all_trucks():
@@ -15,7 +15,7 @@ def list_all_trucks():
         return all_trucks
 
 def update_trucks(truck_id:int ,changes: dict):
-    allowed_fields = ["vin","brand","make","year","mileage","plate","assigned_driver_id"]
+    allowed_fields = ["vin","brand","make","year","mileage","plate","assigned_driver_id","truck_status","truck_location"]
 
     set_clauses = []
     params = []
@@ -45,8 +45,16 @@ def retrieve_truck(truck_id):
         values = cursor.fetchone()
         if values is None:
             raise ValueError(f"[REPO]Truck with ID {truck_id} does not exist")
-        truck = {"truck_id": values["truck_id"],"vin": values["vin"], "brand": values["brand"],
-                 "make": values["make"], "year": values["year"], "mileage": values["mileage"],
-                 "plate": values["plate"], "assigned_driver_id": values["assigned_driver_id"]
+        truck = {
+                 "truck_id": values["truck_id"],
+                 "vin": values["vin"],
+                 "brand": values["brand"],
+                 "make": values["make"],
+                 "year": values["year"],
+                 "mileage": values["mileage"],
+                 "plate": values["plate"],
+                 "assigned_driver_id": values["assigned_driver_id"],
+                 "truck_status": values["truck_status"],
+                 "truck_location": values["truck_location"]
                  }
         return truck

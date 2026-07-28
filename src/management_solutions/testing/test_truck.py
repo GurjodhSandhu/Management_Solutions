@@ -1,5 +1,5 @@
 import pytest
-from models.truck import Truck
+from management_solutions.models.truck import Truck
 from pydantic import ValidationError
 
 def test_truck_valid():

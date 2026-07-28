@@ -11,7 +11,9 @@ def initialize_fleetDB():
     year INTEGER,
     mileage INTEGER,
     plate TEXT,
-    assigned_driver_id INTEGER);
+    assigned_driver_id INTEGER,
+    truck_status TEXT,
+    truck_location TEXT);
     """)
     cursor.execute("""CREATE TABLE IF NOT EXISTS drivers (driver_id INTEGER PRIMARY KEY AUTOINCREMENT, 
     assigned_truck_id INTEGER,
