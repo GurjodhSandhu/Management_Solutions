@@ -1,5 +1,5 @@
 from management_solutions.exceptions import TruckServiceError
-from management_solutions.models.truck import Truck
+from management_solutions.models.truck import Truck, TruckStatus
 from pydantic import ValidationError
 from management_solutions.database import truck_repository
 
@@ -49,3 +49,12 @@ def update_trucks(truck_id: int,changes: dict): #take a dictionary of changes an
         truck_repository.update_trucks(truck_id,changes)
     except Exception as e:
        raise TruckServiceError(f"Failed to update truck: {e}")
+
+def change_truck_status(truck_id: int,status: str):
+    try:
+        truck = get_truck(truck_id)
+        truck.truck_status = TruckStatus(status)
+        update_trucks(truck_id,truck.model_dump(include={"truck_status"}))
+    except Exception as e:
+        raise TruckServiceError(f"Failed to change truck status: {e}")
+
