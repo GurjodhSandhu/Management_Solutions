@@ -1,0 +1,27 @@
+from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
+from django.db import models
+
+# Create your models here.
+
+class Truck(models.Model):
+    vin = models.CharField(validators=[MinLengthValidator(17),MaxLengthValidator(17)],max_length=17)
+    brand = models.CharField(max_length=20)
+    make = models.CharField(max_length=20)
+    year = models.IntegerField(validators=[MinValueValidator(1900),MaxValueValidator(2100)])
+    mileage = models.IntegerField(validators=[MinValueValidator(0)])
+    plate = models.CharField(max_length=10)
+
+    class TruckStatus(models.TextChoices):
+        IN_SERVICE = 'IS',"In Service"
+        AVAILABLE = 'AV',"Available"
+        UNAVAILABLE = 'UNAV',"Unavailable"
+        OUT_OF_SERVICE = 'OOS',"Out of Service"
+
+    class TruckLocation(models.TextChoices):
+        In_TRANSIT = 'IT',"In Transit"
+        AT_DEPOT = 'AT',"At Depot"
+        ARRIVED_DESTINATION = 'AD',"Arrived Destination"
+        ON_ROUTE = 'OR', "On Route"
+
+    truck_status = models.CharField(choices = TruckStatus.choices,default=TruckStatus.IN_SERVICE, max_length= 5)
+    truck_location = models.CharField(choices=TruckLocation.choices,default=TruckLocation.AT_DEPOT, max_length=3)
