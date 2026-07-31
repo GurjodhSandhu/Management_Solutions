@@ -4,12 +4,12 @@ from django.db import models
 # Create your models here.
 
 class Truck(models.Model):
-    vin = models.CharField(validators=[MinLengthValidator(17),MaxLengthValidator(17)],max_length=17)
-    brand = models.CharField(max_length=20)
-    make = models.CharField(max_length=20)
-    year = models.IntegerField(validators=[MinValueValidator(1900),MaxValueValidator(2100)])
-    mileage = models.IntegerField(validators=[MinValueValidator(0)])
-    plate = models.CharField(max_length=10)
+    vin = models.CharField(validators=[MinLengthValidator(17),MaxLengthValidator(17)],max_length=17, null=True,blank=True)
+    brand = models.CharField(max_length=20, null=True,blank=True)
+    make = models.CharField(max_length=20, null=True,blank=True)
+    year = models.IntegerField(validators=[MinValueValidator(1900),MaxValueValidator(2100)], null=True,blank=True)
+    mileage = models.IntegerField(validators=[MinValueValidator(0)], null=True,blank=True)
+    plate = models.CharField(max_length=10, null=True,blank=True)
 
     class TruckStatus(models.TextChoices):
         IN_SERVICE = 'IS',"In Service"
