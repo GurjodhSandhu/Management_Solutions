@@ -1,14 +1,13 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from core.models import Truck
+
+
 # Create your views here.
 def index(request):
-    return HttpResponse("homepage.")
+    return render(request, 'home.html',
+    )
 
-def truck(request):
-    return HttpResponse("truck")
 
-def truck2(request):
-    return HttpResponse("truck2")
-
-def driver(request):
-    return HttpResponse("driver")
+def truck_view(request):
+    trucks = Truck.objects.all()
+    return render(request, "truck.html",{"trucks": trucks})
