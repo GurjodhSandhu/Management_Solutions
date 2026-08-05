@@ -1,26 +1,11 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <title>Logistic Management</title>
 
-</head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">Fleet System</a>
-        <div class="navbar-nav">
-            <a class="nav-link" href="/">Home</a>
-            <a class="nav-link" href="/truck/">Truck Page</a>
-            <a class="nav-link" href="/drivers/">Driver Page</a>
-        </div>
-    </div>
-</nav>
+{% extends "base.html" %}
+{% block content %}
 
 {% for truck in trucks %}
     {% include "components/truck_card.html" with truck=truck %}
 {% endfor %}
 
-</body>
-</html>
+{% endblock %}
+
+
