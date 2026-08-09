@@ -6,5 +6,11 @@
     <p>Mileage: {{truck.mileage}}</p>
     <p>Truck Status: {{truck.truck_status}}</p>
     <p>Truck Location: {{truck.truck_location}}</p>
-    <button class="btn btn-primary">Save</button>
+    {% for driver in truck.get_drivers %}
+        <p>Driver: {{ driver.driver_name }}</p>
+    {% empty %}
+        <p>No drivers assigned</p>
+    {% endfor %}
+
+<a href="{% url 'truck_modify' id=truck.id %}" class="btn btn-primary">Edit</a>
 </div>

@@ -9,8 +9,21 @@ def index(request):
     )
 
 def truck_view(request):
+    context = {}
+    if request.method == "POST":
+        tid = request.POST.get("tid")
+        lname = request.POST.get("lname")
+        context["tid"] = tid
+        context["lname"] = lname
+
     trucks = Truck.objects.all() #queryset (list) of truck objects
-    return render(request, "truck.html",{"trucks": trucks}) #sends truck objects in trucks
+    context["trucks"]=trucks
+
+    return render(request, "truck.html",context) #sends truck objects in trucks
+
+def truck_modify(request,id):
+    truck = Truck.objects.get(id=id)
+    return render(request,"truck_modify.html", {"truck": truck})
 
 def driver_view(request):
     drivers = Driver.objects.all()
