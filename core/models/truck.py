@@ -28,5 +28,9 @@ class Truck(models.Model):
     def get_drivers(self):
         return self.driver.all()
 
+    def get_trips(self):
+        return self.trips.all()
+
+
     def __str__(self):
         return f"{self.vin}"
