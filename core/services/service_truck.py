@@ -1,4 +1,4 @@
-from models import Truck, Driver
+from core.models import Truck, Driver
 
 def add_truck(data):
     truck = Truck(**data)
@@ -17,7 +17,7 @@ def update_truck(truck_id,data):
     else:
         for key, value  in data.items():
             setattr(truck,key, value)
-        truck.clean()
+        truck.full_clean()
         truck.save()
         return truck
 

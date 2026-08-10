@@ -2,31 +2,32 @@
 
 {% block content %}
 
-
+{% if message %}
+<p>message: {{message}}</p>
+<br>
+{% endif %}
 <form action="{% url 'truck_modify' id=truck.id %}" method = post >
   {% csrf_token %}
   <label for="vin">VIN:</label><br>
   <input type="text" id="vin" name="vin" value="{{truck.vin}}"><br>
   <label for="brand">BRAND:</label><br>
   <input type="text" id="brand" name="brand" value="{{truck.brand}}"><br>
-
   <label for="year">YEAR:</label><br>
   <input type="text" id="year" name="year" value="{{truck.year}}"><br>
-
   <label for="mileage">MILEAGE:</label><br>
   <input type="text" id="mileage" name="mileage" value="{{truck.mileage}}"><br>
-
   <br>
   <label for="truck_status">Truck Status:</label>
+  <br>
   <select name="truck_status" id="truck_status">
     <option value="IS" {% if truck.truck_status == "IS" %}selected{% endif %}>In Service</option>
     <option value="AV" {% if truck.truck_status == "AV" %}selected{% endif %}>Available</option>
     <option value="UNAV" {% if truck.truck_status == "UNAV" %}selected{% endif %}>Unavailable</option>
     <option value="OOS" {% if truck.truck_status == "OOS" %}selected{% endif %}>Out of Service</option>
   </select>
-
 <br><br>
   <label for="truck_location">Truck Status:</label>
+  <br>
   <select name="truck_location" id="truck_location">
     <option value = IT {% if truck.truck_location == "IT" %}selected{% endif %}>In Transit</option>
     <option value = AT {% if truck.truck_location == "AT" %}selected{% endif %}>At Depot</option>

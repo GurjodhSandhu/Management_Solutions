@@ -1,6 +1,8 @@
-from django.db.models import Model
+from copyreg import constructor
+
 from django.shortcuts import render
 from core.models import Truck, Driver
+from .services.service_truck import update_truck
 
 
 # Create your views here.
@@ -22,8 +24,29 @@ def truck_view(request):
     return render(request, "truck.html",context) #sends truck objects in trucks
 
 def truck_modify(request,id):
+    context = {}
     truck = Truck.objects.get(id=id)
-    return render(request,"truck_modify.html", {"truck": truck})
+    context["truck"] = truck
+    if request.method == "POST":
+        vin = request.POST.get("vin")
+        brand = request.POST.get("brand")
+        year = request.POST.get("year")
+        mileage = request.POST.get("mileage")
+        truck_status = request.POST.get("truck_status")
+        truck_location = request.POST.get("truck_location")
+        data = {"vin":vin,
+                "brand":brand,
+                "year":year,
+                "mileage":mileage,
+                "truck_status":truck_status,
+                "truck_location":truck_location}
+        try:
+            update_truck(truck.id,data)
+            context["message"] = "success"
+            context["truck"] = Truck.objects.get(id=id)
+        except Exception as e:
+            context["message"] = e
+    return render(request,"truck_modify.html", context)
 
 def driver_view(request):
     drivers = Driver.objects.all()
