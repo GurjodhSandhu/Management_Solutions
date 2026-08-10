@@ -20,12 +20,13 @@ class Trip(models.Model):
 
 
     class TripStatus(models.TextChoices):
-        active = 'act',"active"
-        completed = 'com',"completed"
-        canceled = 'can',"canceled"
-        incomplete = 'inc',"incomplete"
+        IN_PROGRESS = 'inpro', "inprogress"
+        PLANNED = 'plan',"planned"
+        COMPLETE = 'com',"completed"
+        CANCELED = 'can',"canceled"
+        INCOMPLETE = 'inc',"incomplete"
 
-    status = models.CharField(choices = TripStatus.choices,default=TripStatus.active, max_length= 10)
+    status = models.CharField(choices = TripStatus.choices,default=TripStatus.PLANNED, max_length= 10)
 
     def get_load_pay(self):
         load_pay = self.cpm * self.planned_miles / 100
