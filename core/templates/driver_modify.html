@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+{% if message %}
+<p>message: {{message}}</p>
+<br>
+{% endif %}
+<form action="{% url 'driver_modify' id=driver.id %}" method = post >
+  {% csrf_token %}
+  {% include "components/driver_input_form.html" %}
+
+  <input type="submit" value="Submit">
+  <input type="reset" value="reset">
+</form>
+
+{% endblock %}

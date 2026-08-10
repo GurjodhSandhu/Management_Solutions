@@ -4,5 +4,5 @@
     <p>License Number: {{driver.driver_licensenumber}}</p>
     <p>truck: {{driver.truck.id}}</p>
 
-    <button class="btn btn-primary">Edit</button>
+<a href="{% url 'driver_modify' id=driver.id %}" class="btn btn-primary">Edit</a>
 </div>

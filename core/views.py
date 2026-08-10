@@ -2,6 +2,7 @@ from copyreg import constructor
 
 from django.shortcuts import render
 from core.models import Truck, Driver
+from .services.service_driver import update_driver
 from .services.service_truck import update_truck
 
 
@@ -51,3 +52,19 @@ def truck_modify(request,id):
 def driver_view(request):
     drivers = Driver.objects.all()
     return render(request, "driver.html",{"drivers": drivers})
+
+def driver_modify(request,id):
+    context = {}
+    driver = Driver.objects.get(id=id)
+    context["driver"] = driver
+    if request.method == "POST":
+        driver_name = request.POST.get("driver_name")
+        driver_licensenumber = request.POST.get("driver_licensenumber")
+        try:
+            update_driver(driver.id,{"driver_name":driver_name,"driver_licensenumber":driver_licensenumber})
+            context["message"] = "success"
+            context["driver"] = Driver.objects.get(id=id)
+        except Exception as e:
+            context["message"] = e
+
+    return render(request,"driver_modify.html", context)

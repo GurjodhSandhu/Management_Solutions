@@ -1,4 +1,4 @@
-from models import Driver,Truck
+from core.models import Driver,Truck
 
 def add_driver(data):
     driver = Driver(**data)
