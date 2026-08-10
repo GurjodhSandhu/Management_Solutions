@@ -1,5 +1,6 @@
 from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
 from django.db import models
+
 # Create your models here.
 
 class Truck(models.Model):
@@ -26,11 +27,7 @@ class Truck(models.Model):
     truck_location = models.CharField(choices=TruckLocation.choices,default=TruckLocation.AT_DEPOT, max_length=3)
 
     def get_drivers(self):
-        return self.driver.all()
-
-    def get_trips(self):
-        return self.trips.all()
-
+        return self.drivers.all()
 
     def __str__(self):
         return f"{self.vin}"

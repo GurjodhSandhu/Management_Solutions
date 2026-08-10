@@ -3,7 +3,7 @@
 {% block content %}
 
 {% for truck in trucks %}
-    {% include "components/truck_card.html" with truck=truck %}
+    {% include "truck/components/truck_card.html" with truck=truck %}
 {% endfor %}
 
 {% if tid %}

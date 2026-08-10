@@ -22,7 +22,7 @@ def truck_view(request):
     trucks = Truck.objects.all() #queryset (list) of truck objects
     context["trucks"]=trucks
 
-    return render(request, "truck.html",context) #sends truck objects in trucks
+    return render(request, "truck/truck.html",context) #sends truck objects in trucks
 
 def truck_modify(request,id):
     context = {}
@@ -47,11 +47,11 @@ def truck_modify(request,id):
             context["truck"] = Truck.objects.get(id=id)
         except Exception as e:
             context["message"] = e
-    return render(request,"truck_modify.html", context)
+    return render(request,"truck/truck_modify.html", context)
 
 def driver_view(request):
     drivers = Driver.objects.all()
-    return render(request, "driver.html",{"drivers": drivers})
+    return render(request, "driver/driver.html",{"drivers": drivers})
 
 def driver_modify(request,id):
     context = {}
@@ -67,4 +67,4 @@ def driver_modify(request,id):
         except Exception as e:
             context["message"] = e
 
-    return render(request,"driver_modify.html", context)
+    return render(request,"driver/driver_modify.html", context)

@@ -8,7 +8,6 @@ class Trip(models.Model):
     end = models.CharField(max_length=255)
     arrival_time = models.DateTimeField(null=True, blank=True)
     departure_time = models.DateTimeField(null=True, blank=True)
-    truck = models.ForeignKey(Truck,on_delete=models.SET_NULL,null=True,blank=True,related_name='trips')
     driver = models.ForeignKey(Driver,on_delete=models.SET_NULL,null=True,blank=True,related_name='trips')
 
     planned_miles = models.FloatField(default=0)
