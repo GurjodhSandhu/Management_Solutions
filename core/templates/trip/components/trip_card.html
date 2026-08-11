@@ -1,0 +1,8 @@
+<div class="trip-card card p-3 mb-3 shadow-sm">
+    <h5 class="mb-2">Trip {{trip.id}}</h5>
+    <p>start: {{trip.start}}</p>
+    <p>end: {{trip.end}}</p>
+
+
+<a href="{% url 'trip_modify' id=trip.id %}" class="btn btn-primary">Edit</a>
+</div>

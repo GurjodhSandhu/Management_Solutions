@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% if message %}
+<p>message: {{message}}</p>
+<br>
+{% endif %}
+
+<form action="{% url 'trip_modify' id=trip.id %}" method="POST">
+    {% csrf_token %}
+    {% include "trip/components/trip_input_form.html"%}
+    <input type="submit" value="submit">
+    <input type="reset" value="reset">
+</form>
+
+
+
+{% endblock %}

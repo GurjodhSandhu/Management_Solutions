@@ -1,9 +1,10 @@
 from copyreg import constructor
 
 from django.shortcuts import render
-from core.models import Truck, Driver
+from core.models import Truck, Driver, Trip
 from .services.service_driver import update_driver
 from .services.service_truck import update_truck
+from .services.service_trip import update_trip
 
 
 # Create your views here.
@@ -68,3 +69,34 @@ def driver_modify(request,id):
             context["message"] = e
 
     return render(request,"driver/driver_modify.html", context)
+
+def trip_view(request):
+    trip = Trip.objects.all()
+    return render(request, "trip/trip.html",{"trips": trip})
+
+def trip_modify(request,id):
+    context = {}
+    trip = Trip.objects.get(id=id)
+    context["trip"] = trip
+    if request.method == "POST":
+        start = request.POST.get("start")
+        end = request.POST.get("end")
+        arrival_time = request.POST.get("arrival_time")
+        departure_time = request.POST.get("departure_time")
+        planned_miles = request.POST.get("planned_miles")
+        cpm = request.POST.get("cpm")
+
+        try:
+            update_trip(id,{
+                "start":start,
+                "end":end,
+                "arrival_time":arrival_time,
+                "departure_time":departure_time,
+                "planned_miles":planned_miles,
+                "cpm":cpm,
+                            })
+            context["trip"] = Trip.objects.get(id=id)
+            context["message"] = "success"
+        except Exception as e:
+            context["message"] = e
+    return render(request,"trip/trip_modify.html", context)

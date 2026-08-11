@@ -11,4 +11,4 @@ class Driver(models.Model):
         return self.trips.all()
 
     def __str__(self):
-        return f"{self.driver_name}"
+        return f"Driver {self.id}: {self.driver_name}"
