@@ -1,14 +1,27 @@
 <label for="start">Start:</label><br>
   <input type="text" id="start" name="start" value="{{trip.start}}"><br>
+
   <label for="end">End Location:</label><br>
   <input type="text" id="end" name="end" value="{{trip.end}}"><br>
+
 <label for="departure_time">Departure Time:</label><br>
   <input type="datetime-local" id="departure_time" name="departure_time" value="{{ trip.departure_time|default_if_none:''|date:'Y-m-d\\TH:i' }}"
 ><br>
+
   <label for="arrival_time">Arrival time:</label><br>
   <input type="datetime-local" id="arrival_time" name="arrival_time" value="{{ trip.arrival_time|default_if_none:''|date:'Y-m-d\\TH:i' }}"
 ><br>
+
   <label for="planned_miles">Planned Miles:</label><br>
   <input type="number" id="planned_miles" name="planned_miles" value="{{trip.planned_miles}}"><br>
+
   <label for="cpm">Cents/mile :</label><br>
   <input type="number" id="cpm" name="cpm" value="{{trip.cpm}}"><br>
+
+  <label for="driver">Driver :</label><br>
+  <select name="driver" id="driver">
+        {% for driver in drivers %}
+            <option value = {{driver.id}} {% if trip.driver_id == driver.id %}selected{% endif %}>{{driver}}</option>
+        {% endfor %}
+   </select>
+ <br><br>

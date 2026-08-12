@@ -7,7 +7,7 @@ class Driver(models.Model):
     driver_name = models.CharField(max_length=10, null=True,blank=True)
     driver_licensenumber = models.CharField(max_length=10, null=True,blank=True)
 
-    def get_trip(self):
+    def get_trips(self):
         return self.trips.all()
 
     def __str__(self):

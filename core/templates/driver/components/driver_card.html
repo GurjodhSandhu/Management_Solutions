@@ -2,7 +2,16 @@
     <h5 class="mb-2">Driver {{driver.id}}</h5>
     <p>Name: {{driver.driver_name}}</p>
     <p>License Number: {{driver.driver_licensenumber}}</p>
-    <p>truck: {{driver.truck.id}}</p>
 
-<a href="{% url 'driver_modify' id=driver.id %}" class="btn btn-primary">Edit</a>
+    {% if driver.truck.id %}
+    <p>Truck: {{driver.truck.id}}</p>
+    {% else %}
+    <p>Truck: none</p>
+    {% endif %}
+
+    {% for trip in driver.get_trips %}
+    <p>Trip: {{trip}}</p>
+    {% endfor %}
+
+    <a href="{% url 'driver_modify' id=driver.id %}" class="btn btn-primary">Edit</a>
 </div>

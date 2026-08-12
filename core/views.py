@@ -14,12 +14,6 @@ def index(request):
 
 def truck_view(request):
     context = {}
-    if request.method == "POST":
-        tid = request.POST.get("tid")
-        lname = request.POST.get("lname")
-        context["tid"] = tid
-        context["lname"] = lname
-
     trucks = Truck.objects.all() #queryset (list) of truck objects
     context["trucks"]=trucks
 
@@ -78,6 +72,7 @@ def trip_modify(request,id):
     context = {}
     trip = Trip.objects.get(id=id)
     context["trip"] = trip
+    context["drivers"]=Driver.objects.all()
     if request.method == "POST":
         start = request.POST.get("start")
         end = request.POST.get("end")
@@ -85,7 +80,7 @@ def trip_modify(request,id):
         departure_time = request.POST.get("departure_time")
         planned_miles = request.POST.get("planned_miles")
         cpm = request.POST.get("cpm")
-
+        driver = request.POST.get("driver")
         try:
             update_trip(id,{
                 "start":start,
@@ -94,6 +89,7 @@ def trip_modify(request,id):
                 "departure_time":departure_time,
                 "planned_miles":planned_miles,
                 "cpm":cpm,
+                "driver":Driver.objects.get(id=driver)
                             })
             context["trip"] = Trip.objects.get(id=id)
             context["message"] = "success"

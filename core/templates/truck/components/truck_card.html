@@ -6,6 +6,7 @@
     <p>Mileage: {{truck.mileage}}</p>
     <p>Truck Status: {{truck.truck_status}}</p>
     <p>Truck Location: {{truck.truck_location}}</p>
+
     {% for driver in truck.get_drivers %}
         <p>Driver: {{ driver.driver_name }}</p>
     {% empty %}
