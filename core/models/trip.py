@@ -1,7 +1,6 @@
+from django.core.exceptions import ValidationError
 from django.db import models
-
-from core.models import Truck, Driver
-
+from .driver import Driver
 
 class Trip(models.Model):
     start = models.CharField(max_length=255)
@@ -34,4 +33,5 @@ class Trip(models.Model):
 
     def __str__(self):
         return f"Trip {self.id}: {self.start} → {self.end} ({self.status})"
+
 

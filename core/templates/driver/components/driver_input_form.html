@@ -2,4 +2,10 @@
   <input type="text" id="driver_name" name="driver_name" value="{{driver.driver_name}}"><br>
   <label for="driver_licensenumber">License Number:</label><br>
   <input type="text" id="driver_licensenumber" name="driver_licensenumber" value="{{driver.driver_licensenumber}}"><br>
-
+<label for="truck">Truck :</label><br>
+  <select name="truck" id="truck">
+        {% for truck in trucks %}
+            <option value = {{truck.id}} {% if driver.truck_id == truck.id %}selected{% endif %}>{{truck}}</option>
+        {% endfor %}
+  </select>
+<br>

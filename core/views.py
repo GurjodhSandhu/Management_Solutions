@@ -52,11 +52,18 @@ def driver_modify(request,id):
     context = {}
     driver = Driver.objects.get(id=id)
     context["driver"] = driver
+    context["trucks"]=Truck.objects.all()
     if request.method == "POST":
         driver_name = request.POST.get("driver_name")
         driver_licensenumber = request.POST.get("driver_licensenumber")
+        truck = request.POST.get("truck")
+
         try:
-            update_driver(driver.id,{"driver_name":driver_name,"driver_licensenumber":driver_licensenumber})
+            update_driver(driver.id,{
+                    "driver_name":driver_name,
+                    "driver_licensenumber":driver_licensenumber,
+                    "truck":Truck.objects.get(id=truck)
+            })
             context["message"] = "success"
             context["driver"] = Driver.objects.get(id=id)
         except Exception as e:

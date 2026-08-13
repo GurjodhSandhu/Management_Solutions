@@ -9,7 +9,7 @@
     <p>Truck: none</p>
     {% endif %}
 
-    {% for trip in driver.get_trips %}
+    {% for trip in driver.get_trips_active %}
     <p>Trip: {{trip}}</p>
     {% endfor %}
 

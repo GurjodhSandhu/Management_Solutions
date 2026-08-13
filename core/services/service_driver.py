@@ -17,7 +17,6 @@ def update_driver(driver_id,data):
     else:
         for key, value in data.items():
             setattr(driver, key, value)
-        driver.clean()
         driver.save()
         return driver
 

@@ -12,7 +12,7 @@ class Truck(models.Model):
     plate = models.CharField(max_length=10, null=True,blank=True)
 
     class TruckStatus(models.TextChoices):
-        IN_SERVICE = 'IS',"In Service"
+        IN_REPAIR = 'IR',"In Repair"
         AVAILABLE = 'AV',"Available"
         UNAVAILABLE = 'UNAV',"Unavailable"
         OUT_OF_SERVICE = 'OOS',"Out of Service"
@@ -23,7 +23,7 @@ class Truck(models.Model):
         ARRIVED_DESTINATION = 'AD',"Arrived Destination"
         ON_ROUTE = 'OR', "On Route"
 
-    truck_status = models.CharField(choices = TruckStatus.choices,default=TruckStatus.IN_SERVICE, max_length= 5)
+    truck_status = models.CharField(choices = TruckStatus.choices,default=TruckStatus.AVAILABLE, max_length= 5)
     truck_location = models.CharField(choices=TruckLocation.choices,default=TruckLocation.AT_DEPOT, max_length=3)
 
     def get_drivers(self):

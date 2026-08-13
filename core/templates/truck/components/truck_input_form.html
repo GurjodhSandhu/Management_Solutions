@@ -10,7 +10,7 @@
   <label for="truck_status">Truck Status:</label>
   <br>
   <select name="truck_status" id="truck_status">
-    <option value="IS" {% if truck.truck_status == "IS" %}selected{% endif %}>In Service</option>
+    <option value="IR" {% if truck.truck_status == "IR" %}selected{% endif %}>In Repair</option>
     <option value="AV" {% if truck.truck_status == "AV" %}selected{% endif %}>Available</option>
     <option value="UNAV" {% if truck.truck_status == "UNAV" %}selected{% endif %}>Unavailable</option>
     <option value="OOS" {% if truck.truck_status == "OOS" %}selected{% endif %}>Out of Service</option>
