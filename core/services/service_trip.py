@@ -1,8 +1,10 @@
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import Model
+from core.repositories import TripRepository
 
 from core.models import Trip,Driver,Truck
+from models import Driver, Truck
 
 def new_trip(data):
     new_trip = Trip(**data)
@@ -12,40 +14,27 @@ def new_trip(data):
 
 @transaction.atomic
 def start_trip(trip_id):
-
-    trip = Trip.objects.filter(id=trip_id).first()
+    trip = TripRepository.get_trip(trip_id)
     if trip is None:
-        return None
+        raise ValidationError("No trip found")
 
+    trip.validate_start()
+    trip.start()
     driver = trip.driver
-    if driver is None:
-        raise ValidationError("No driver found")
-
-    truck = driver.truck
-    if truck is None:
-        raise ValidationError("Driver is not assigned a truck")
-
-    if driver.driver_status == Driver.DriverStatus.UNAVAILABLE:
-        raise ValidationError("driver unavailable")
-    if driver.get_trips_active().exclude(id=trip.id).first() is not None:
-        raise ValidationError("Driver already has an active trip")
-
-    driver.validate_truck() #make sure truck is correctly setup
-
-    trip.status = Trip.TripStatus.IN_PROGRESS
-    driver.driver_status = Driver.DriverStatus.UNAVAILABLE
-    truck.truck_status = truck.TruckStatus.UNAVAILABLE
+    truck = trip.truck
+    driver.mark_unavailable()
+    truck.mark_unavailable()
 
     truck.full_clean()
     trip.full_clean()
 
-    truck.save()
     driver.save()
+    truck.save()
     trip.save()
     return trip
 
 def validate_planned_time(trip_id):
-    trip = Trip.objects.filter(id=trip_id).first()
+    trip = TripRepository.get_trip(trip_id)
     if trip is None:
         raise ValidationError("No trip found")
     driver = trip.driver
@@ -61,7 +50,7 @@ def validate_planned_time(trip_id):
 
 
 def complete_trip(trip_id):
-    trip = Trip.objects.filter(id=trip_id).first()
+    trip = TripRepository.get_trip(trip_id)
     if trip is None:
         return None
     trip.status = trip.TripStatus.COMPLETE
@@ -70,7 +59,7 @@ def complete_trip(trip_id):
     return trip
 
 def incomplete_trip(trip_id):
-    trip = Trip.objects.filter(id=trip_id).first()
+    trip = TripRepository.get_trip(trip_id)
     if trip is None:
         return None
     trip.status = trip.TripStatus.INCOMPLETE
@@ -79,7 +68,7 @@ def incomplete_trip(trip_id):
     return trip
 
 def cancel_trip(trip_id):
-    trip = Trip.objects.filter(id=trip_id).first()
+    trip = TripRepository.get_trip(trip_id)
     if trip is None:
         return None
     trip.status = "canceled"
@@ -88,7 +77,7 @@ def cancel_trip(trip_id):
     return trip
 
 def update_trip(trip_id,data):
-    trip = Trip.objects.filter(id=trip_id).first()
+    trip = TripRepository.get_trip(trip_id)
     if trip is None:
         return None
     for key,value in data.items():
@@ -98,14 +87,14 @@ def update_trip(trip_id,data):
     return trip
 
 def delete_trip(trip_id):
-    Trip.objects.filter(id=trip_id).delete()
+    delete_trip(trip_id)
 
 def validate_trip_information():
     #validation rules here
     return True
 
 def assign_driver_to_trip(trip_id,driver_id):
-    trip = Trip.objects.filter(id=trip_id).first() #get trip
+    trip = TripRepository.get_trip(trip_id)
     driver = Driver.objects.filter(id=driver_id).first()
     if driver is None:
         raise ValidationError("No driver found")

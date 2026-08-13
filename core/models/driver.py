@@ -16,7 +16,7 @@ class Driver(models.Model):
 
     def validate_truck(self):
         if self.truck is None:
-            return None
+            raise ValidationError("Driver has no truck")
         if self.truck.truck_status == Truck.TruckStatus.UNAVAILABLE:
             raise ValidationError("Truck is unavailable")
         if self.truck.truck_status == Truck.TruckStatus.OUT_OF_SERVICE:
@@ -32,6 +32,16 @@ class Driver(models.Model):
 
     def get_trips_planned(self):
         return self.trips.filter(status="planned")
+
+    def mark_unavailable(self):
+        self.truck_status = Truck.TruckStatus.UNAVAILABLE
+
+    def mark_available(self):
+        self.truck_status = Truck.TruckStatus.AVAILABLE
+
+    def validate_available(self):
+        if self.driver_status == Driver.DriverStatus.UNAVAILABLE:
+            raise ValidationError("Driver unavailable")
 
     def __str__(self):
         return f"Driver {self.id}: {self.driver_name}"

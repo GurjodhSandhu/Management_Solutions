@@ -26,6 +26,11 @@ class Truck(models.Model):
     truck_status = models.CharField(choices = TruckStatus.choices,default=TruckStatus.AVAILABLE, max_length= 5)
     truck_location = models.CharField(choices=TruckLocation.choices,default=TruckLocation.AT_DEPOT, max_length=3)
 
+    def mark_unavailable(self):
+        self.Truck_status = Truck.TruckStatus.UNAVAILABLE
+    def mark_available(self):
+        self.Truck_status = Truck.TruckStatus.AVAILABLE
+
     def get_drivers(self):
         return self.drivers.all()
 
