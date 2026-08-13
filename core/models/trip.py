@@ -33,10 +33,6 @@ class Trip(models.Model):
         load_pay = self.cpm * self.planned_miles / 100
         return load_pay
 
-
-
-
-
     def validate_start(self):
         driver = self.driver
         if driver is None:
@@ -45,6 +41,23 @@ class Trip(models.Model):
         driver.validate_available()
         if driver.get_trips_active().exclude(id=self.id).exists():
             raise ValidationError("Driver already has an active trip")
+
+    def validate_complete(self):
+        if self.status != Trip.TripStatus.IN_PROGRESS:
+            raise ValidationError("The trip most be started to be completed")
+        if self.status != Trip.TripStatus.IN_PROGRESS:
+            raise ValidationError("The trip must be started to end it")
+
+
+    def validate_incomplete(self):
+        if self.status == Trip.TripStatus.COMPLETE:
+            raise ValidationError("The trip was already completed")
+
+    def validate_cancel(self):
+        if self.status == Trip.TripStatus.COMPLETE:
+            raise ValidationError("The trip was already completed")
+        if self.status != Trip.TripStatus.PLANNED:
+            raise ValidationError("only planned trips can be cancelled")
 
     def validate_planned_time(self):
         driver = self.driver
