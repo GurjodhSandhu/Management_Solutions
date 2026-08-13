@@ -22,6 +22,24 @@ def update_trip(trip_id,data):
     trip.save()
     return trip
 
+def delete_trip(trip_id):
+    TripRepository.delete_trip(trip_id)
+
+def assign_driver_to_trip(trip_id,driver_id):
+    trip = TripRepository.get_trip(trip_id)
+    driver = Driver.objects.filter(id=driver_id).first()
+    if driver is None:
+        raise ValidationError("No driver found")
+    if trip is None:
+        raise ValidationError("No trip found")
+    if trip.status != Trip.TripStatus.PLANNED:
+        raise ValidationError("Trip is not in planning process: ")
+    trip.validate_planned_time(trip)
+    trip.driver = driver
+    trip.full_clean()
+    trip.save()
+
+    return trip
 #TRIP STATE MACHINE SERVICES --------
 
 @transaction.atomic
@@ -31,10 +49,10 @@ def start_trip(trip_id):
         raise ValidationError("No trip found")
 
     trip.validate_start()
-    trip.start()
+    trip.mark_in_progress()
 
     driver = trip.driver
-    truck = trip.truck
+    truck = driver.truck
     driver.mark_unavailable()
     truck.mark_unavailable()
 
@@ -119,20 +137,3 @@ def cancel_trip(trip_id):
 
 #TRIP STATE MACHINE END --------
 
-
-def delete_trip(trip_id):
-    delete_trip(trip_id)
-
-def assign_driver_to_trip(trip_id,driver_id):
-    trip = TripRepository.get_trip(trip_id)
-    driver = Driver.objects.filter(id=driver_id).first()
-    if driver is None:
-        raise ValidationError("No driver found")
-    if trip is None:
-        raise ValidationError("No trip found")
-    trip.validate_planned_time(trip_id)
-    trip.driver_id = driver_id
-    trip.full_clean()
-    trip.save()
-
-    return trip

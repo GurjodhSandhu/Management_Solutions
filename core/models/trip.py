@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from . import Driver
+from . import Driver, Truck
 from .driver import Driver
 
 class Trip(models.Model):
@@ -44,10 +44,7 @@ class Trip(models.Model):
 
     def validate_complete(self):
         if self.status != Trip.TripStatus.IN_PROGRESS:
-            raise ValidationError("The trip most be started to be completed")
-        if self.status != Trip.TripStatus.IN_PROGRESS:
             raise ValidationError("The trip must be started to end it")
-
 
     def validate_incomplete(self):
         if self.status == Trip.TripStatus.COMPLETE:
@@ -72,15 +69,20 @@ class Trip(models.Model):
 
     def clean(self):
         if self.status == Trip.TripStatus.IN_PROGRESS: #if trip's state is in progress check if its valid
-            self.validate_start()
+            if not self.driver:
+                raise ValidationError("Trip has no driver")
+            if not self.driver.truck:
+                raise ValidationError("No truck found")
             if self.driver.driver_status != Driver.DriverStatus.UNAVAILABLE:
-                raise ValidationError("Trips's driver has incorrect status: trips active but drivers available")
-        if self.driver:
-            self.validate_planned_time() #check if driver has conflicts with previous plan
+                raise ValidationError("Trips's driver has incorrect status: trips active but drivers not unavailable")
+            if self.driver.truck.truck_status != Truck.TruckStatus.UNAVAILABLE:
+                raise ValidationError("Trip's truck has incorrect status: trips active but trucks not unavailable")
+
+        if self.driver and self.status == Trip.TripStatus.PLANNED or self.driver and self.status == Trip.TripStatus.IN_PROGRESS: #if trip is still active or planed
+            self.validate_planned_time() #check if driver has conflicts with a previous planned trip *
 
 
-
-    def start(self):
+    def mark_in_progress(self):
         self.status = Trip.TripStatus.IN_PROGRESS
 
     def __str__(self):
