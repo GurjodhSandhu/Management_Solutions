@@ -48,7 +48,6 @@ class Driver(models.Model):
 
     def clean(self):
         super().clean()
-        self.validate_truck()
 
     def save(self, *args, **kwargs):
         self.full_clean()  # ensures clean() runs
