@@ -1,6 +1,7 @@
+from datetime import timezone
+
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import Model
 from core.repositories import TripRepository
 
 from core.models import Trip,Driver,Truck
@@ -50,6 +51,7 @@ def start_trip(trip_id):
 
     trip.validate_start()
     trip.mark_in_progress()
+    trip.departure_time = timezone.now()
 
     driver = trip.driver
     truck = driver.truck
@@ -62,7 +64,6 @@ def start_trip(trip_id):
     driver.save()
     truck.save()
     trip.save()
-    #todo add logic to update departure time
     return trip
 
 @transaction.atomic
@@ -73,6 +74,8 @@ def complete_trip(trip_id):
 
     trip.validate_complete()
     trip.status = trip.TripStatus.COMPLETE
+    trip.arrival_time = timezone.now()
+
     driver = trip.driver
     truck = driver.truck
 
@@ -86,7 +89,6 @@ def complete_trip(trip_id):
     truck.save()
     trip.save()
 
-    #todo add logic to update arrival time
     return trip
 
 @transaction.atomic
