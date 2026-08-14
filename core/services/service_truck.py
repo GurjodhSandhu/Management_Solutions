@@ -1,17 +1,27 @@
+from django.core.exceptions import ValidationError
+
 from core.models import Truck, Driver
+from repositories import TruckRepository
+
 
 def add_truck(data):
     truck = Truck(**data)
-    truck.clean()
+    truck.full_clean()
     truck.save()
     return truck
 
 def delete_truck(truck_id):
-    Truck.objects.filter(id=truck_id).delete()
+    truck = TruckRepository.get_truck(truck_id)
+    if truck is None:
+        return None
+    for driver in truck.get_drivers():
+        if driver.get_trips_active().exists():
+            raise ValidationError("Truck and driver are on an active trip")
+    TruckRepository.delete_truck(truck_id)
     return True
 
 def update_truck(truck_id,data):
-    truck = Truck.objects.filter(id=truck_id).first()
+    truck = TruckRepository.get_truck(truck_id)
     if truck is None:
         return None
     else:
@@ -21,29 +31,17 @@ def update_truck(truck_id,data):
         truck.save()
         return truck
 
-def assign_driver_to_truck(truck_id,driver_id):
-    driver = Driver.objects.filter(id=driver_id).first()
-    if driver is None:
-        return None
-    truck = Truck.objects.filter(id = truck_id).first()
+def remove_all_drivers_from_truck(truck_id):
+    truck = TruckRepository.get_truck(truck_id)
     if truck is None:
         return None
-    else:
-        driver.truck = truck
-        driver.clean()
-        driver.save()
-        return driver
-
-def get_driver_truck(truck_id):
-    return list(Driver.objects.filter(truck_id = truck_id))
-
-def remove_driver_from_truck(truck_id):
-    drivers = Driver.objects.filter(truck_id = truck_id)
+    drivers = truck.get_drivers()
     if not drivers.exists():
         return None
     else:
         for driver in drivers:
+            if driver.get_trips_active().exists():
+                raise ValidationError("Driver is on an active trip cannot remove from truck")
             driver.truck = None
-            driver.clean()
             driver.save()
-        return list(drivers)
+        return True
