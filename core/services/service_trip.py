@@ -34,7 +34,7 @@ def assign_driver_to_trip(trip_id,driver_id):
         raise ValidationError("No trip found")
     if trip.status != Trip.TripStatus.PLANNED:
         raise ValidationError("Trip is not in planning process: ")
-    trip.validate_planned_time(trip)
+    trip.validate_planned_time()
     trip.driver = driver
     trip.full_clean()
     trip.save()

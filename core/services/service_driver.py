@@ -2,7 +2,6 @@ from django.core.exceptions import ValidationError
 
 from core.models import Driver,Truck
 from core.repositories import DriverRepository
-from models import Truck
 
 
 def add_driver(data):

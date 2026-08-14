@@ -1,4 +1,4 @@
-from models import Driver
+from core.models import Driver
 
 def get_driver(driver_id):
     return Driver.objects.filter(id=driver_id).first()

@@ -31,13 +31,13 @@ class Driver(models.Model):
         return self.trips.filter(status="inpro")
 
     def get_trips_planned(self):
-        return self.trips.filter(status="planned")
+        return self.trips.filter(status="plan")
 
     def mark_unavailable(self):
-        self.truck_status = Truck.TruckStatus.UNAVAILABLE
+        self.driver_status = Driver.DriverStatus.UNAVAILABLE
 
     def mark_available(self):
-        self.truck_status = Truck.TruckStatus.AVAILABLE
+        self.driver_status = Driver.driver_status.AVAILABLE
 
     def validate_available(self):
         if self.driver_status == Driver.DriverStatus.UNAVAILABLE:
