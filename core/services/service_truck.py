@@ -1,7 +1,7 @@
 from django.core.exceptions import ValidationError
 
 from core.models import Truck, Driver
-from repositories import TruckRepository
+from core.repositories import TruckRepository
 
 
 def add_truck(data):
@@ -45,3 +45,5 @@ def remove_all_drivers_from_truck(truck_id):
             driver.truck = None
             driver.save()
         return True
+
+

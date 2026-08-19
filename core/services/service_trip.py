@@ -5,6 +5,7 @@ from django.db import transaction
 from core.repositories import TripRepository
 
 from core.models import Trip,Driver,Truck
+from core.repositories import DriverRepository
 
 
 def new_trip(data):
@@ -18,7 +19,12 @@ def update_trip(trip_id,data):
     if trip is None:
         return None
     for key,value in data.items():
-        setattr(trip,key,value)
+        if key == 'driver':
+            setattr(trip, key, DriverRepository.get_driver(value))
+            if value is None:
+                raise ValidationError("Driver not found")
+        else:
+            setattr(trip,key,value)
     trip.full_clean()
     trip.save()
     return trip

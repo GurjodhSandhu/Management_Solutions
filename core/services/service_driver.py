@@ -16,6 +16,10 @@ def update_driver(driver_id,data):
         return None
     else:
         for key, value in data.items():
+            if key == "truck":
+                truck = Truck.objects.get(id=int(value))
+                setattr(driver,key,truck)
+                continue
             setattr(driver, key, value)
         driver.save()
         return driver
