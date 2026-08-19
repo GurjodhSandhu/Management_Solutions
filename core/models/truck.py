@@ -53,5 +53,10 @@ class Truck(models.Model):
                 raise ValidationError("Truck and driver are on an active trip")
         return False
 
+    def get_trips_active(self):
+        return self.trips.filter(status="inpro")
+    def get_all_trips(self):
+        return self.trips.all()
+
     def __str__(self):
         return f"{self.vin}"
