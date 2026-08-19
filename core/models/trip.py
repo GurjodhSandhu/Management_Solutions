@@ -70,7 +70,7 @@ class Trip(models.Model):
     def validate_driver_time_conflicts(self):
         driver = self.driver
         if driver is None:
-            raise ValidationError("No driver found")
+            return
         if not self.departure_time or not self.arrival_time:
             return
         for planned_trip in driver.get_trips_planned():
@@ -84,7 +84,7 @@ class Trip(models.Model):
     def validate_truck_time_conflicts(self):
         truck = self.truck
         if truck is None:
-            raise ValidationError("No truck found")
+            return
         if not self.departure_time or not self.arrival_time:
             return
         for planned_trip in truck.get_all_trips():
