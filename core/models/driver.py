@@ -37,7 +37,7 @@ class Driver(models.Model):
         self.driver_status = Driver.DriverStatus.UNAVAILABLE
 
     def mark_available(self):
-        self.driver_status = Driver.driver_status.AVAILABLE
+        self.driver_status = Driver.DriverStatus.AVAILABLE
 
     def validate_available(self):
         if self.driver_status == Driver.DriverStatus.UNAVAILABLE:

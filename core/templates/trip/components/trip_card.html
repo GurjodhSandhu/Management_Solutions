@@ -2,7 +2,33 @@
     <h5 class="mb-2">Trip {{trip.id}}</h5>
     <p>start: {{trip.start}}</p>
     <p>end: {{trip.end}}</p>
+    <p>departure: {{trip.departure_time}}</p>
+    <p>arrival: {{trip.arrival_time}}</p>
+    <p>driver: {{trip.driver}}</p>
+    <p>truck: {{trip.truck}}</p>
+    <p>status: {{trip.status}}</p>
 
+    <br><br>
 
-<a href="{% url 'trip_modify' id=trip.id %}" class="btn btn-primary">Edit</a>
+    <form action="{% url 'trip_action' id=trip.id %}" method="post">
+        {% csrf_token %}
+
+    {% if trip.status == "plan" %}
+    <a href="{% url 'trip_modify' id=trip.id %}" class="btn btn-primary">Edit</a>
+    <button name="action" value="trip_start" class="btn btn-primary">Start Trip</button>
+    <button name="action" value="trip_cancel" class="btn btn-primary">Cancel Trip</button>
+
+    {% elif trip.status == "inpro" %}
+    <a href="{% url 'trip_modify' id=trip.id %}" class="btn btn-primary">Edit</a>
+    <button name="action" value="trip_complete" class="btn btn-primary">trip complete</button>
+    <button name="action" value="trip_stop" class="btn btn-primary">stop</button>
+
+    {% elif trip.status == "com" %}
+    <!-- Completed -->
+    {% elif trip.status == "can" %}
+    <!-- Canceled -->
+    {% elif trip.status == "inc" %}
+    <!-- Incomplete -->
+    {% endif %}
+</form>
 </div>

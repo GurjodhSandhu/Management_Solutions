@@ -14,9 +14,8 @@ def delete_truck(truck_id):
     truck = TruckRepository.get_truck(truck_id)
     if truck is None:
         return None
-    for driver in truck.get_drivers():
-        if driver.get_trips_active().exists():
-            raise ValidationError("Truck and driver are on an active trip")
+    if truck.get_trips_active():
+        raise ValidationError("Truck is on an active trip cannot remove")
     TruckRepository.delete_truck(truck_id)
     return True
 

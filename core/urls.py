@@ -9,5 +9,6 @@ urlpatterns = [
     path("truck/<int:id>/",views.truck_modify,name="truck_modify"),
     path("driver/<int:id>/",views.driver_modify,name="driver_modify"),
     path("trip/<int:id>/", views.trip_modify, name="trip_modify"),
+    path("trip_action/<int:id>/", views.trip_action, name="trip_action"),
 
 ]

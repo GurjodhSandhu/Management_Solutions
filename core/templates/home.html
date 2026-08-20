@@ -2,8 +2,32 @@
 
 {% block content %}
 *dashboard here*
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert
+            {% if message.tags == 'error' %}alert-danger{% endif %}
+            {% if message.tags == 'success' %}alert-success{% endif %}
+        ">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
 
 
-
+<a href="{% url 'home' %}" class="btn btn-primary">add truck</a>
+<a href="{% url 'home' %}" class="btn btn-primary">add driver</a>
+<a href="{% url 'home' %}" class="btn btn-primary">add trip</a>
+<br><br>
+{% for trip in trips %}
+    {% include "trip/components/trip_card.html" with trip=trip %}
+{% endfor %}
+<br><br>
+{% for truck in trucks %}
+    {% include "truck/components/truck_card.html" with truck=truck %}
+{% endfor %}
+<br><br>
+{% for driver in drivers %}
+    {% include "driver/components/driver_card.html" with driver=driver %}
+{% endfor %}
 
 {% endblock %}

@@ -28,30 +28,25 @@ class Truck(models.Model):
     truck_location = models.CharField(choices=TruckLocation.choices,default=TruckLocation.AT_DEPOT, max_length=3)
 
     def mark_in_repair(self):
-        self.check_on_trip()
-        self.Truck_status = Truck.TruckStatus.IN_REPAIR
+        self.truck_status = Truck.TruckStatus.IN_REPAIR
 
     def mark_unavailable(self):
-        self.Truck_status = Truck.TruckStatus.UNAVAILABLE
+        self.truck_status = Truck.TruckStatus.UNAVAILABLE
 
     def mark_available(self):
-        self.check_on_trip() #cannot change state to avaiable until trip states matchs logic
-        self.Truck_status = Truck.TruckStatus.AVAILABLE
+        self.truck_status = Truck.TruckStatus.AVAILABLE
 
     def mark_out_of_service(self):
-        self.check_on_trip()
-        self.TruckStatus = Truck.TruckStatus.OUT_OF_SERVICE
+        self.get_trips_active()
+        self.truck_status = Truck.TruckStatus.OUT_OF_SERVICE
 
     def get_drivers(self):
         return self.drivers.all()
 
-    def check_on_trip(self):
-        if not self.get_drivers().exist():
-            return None
-        for driver in self.get_drivers():
-            if driver.get_trips_active().exists():
-                raise ValidationError("Truck and driver are on an active trip")
-        return False
+
+    def validate_active_trip(self):
+        if self.get_trips_active().exclude(id=self.id).exists():
+            raise ValidationError("Truck is on an active trip ")
 
     def get_trips_active(self):
         return self.trips.filter(status="inpro")
