@@ -42,6 +42,8 @@ class Trip(models.Model):
     def validate_incomplete(self):
         if self.status == Trip.TripStatus.COMPLETE:
             raise ValidationError("The trip was already completed")
+        if self.status == Trip.TripStatus.CANCELED:
+            raise ValidationError("The trip was already Canceled")
 
     def validate_cancel(self):
         if self.status == Trip.TripStatus.COMPLETE:
@@ -110,6 +112,9 @@ class Trip(models.Model):
         if self.status == Trip.TripStatus.IN_PROGRESS:
             if self.departure_time is None:
                 raise ValidationError("departure_time is required")
+        if self.departure_time and self.arrival_time:
+            if self.departure_time > self.arrival_time:
+                raise ValidationError("departure_time cannot be greater than arrival_time")
 
     def __str__(self):
         return f"Trip {self.id}: {self.start} → {self.end} ({self.status})"

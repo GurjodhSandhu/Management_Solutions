@@ -43,7 +43,7 @@ class Truck(models.Model):
     def get_drivers(self):
         return self.drivers.all()
 
-
+    #todo remove validate_active_trip it has invalid logic i.e trip id = truck id
     def validate_active_trip(self):
         if self.get_trips_active().exclude(id=self.id).exists():
             raise ValidationError("Truck is on an active trip ")
