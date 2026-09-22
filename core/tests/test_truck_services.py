@@ -1,6 +1,6 @@
 import pytest
 from core.models import Truck, Driver, Trip
-from tests import factories
+from core.tests import factories
 from core.services import service_truck
 from core.repositories import TruckRepository
 
