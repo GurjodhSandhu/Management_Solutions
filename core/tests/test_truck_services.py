@@ -14,17 +14,15 @@ def test_add_truck():
 
 @pytest.mark.django_db
 def test_delete_truck():
-    truck = {"year": 2005}
-    service_truck.add_truck(truck)
-    service_truck.add_truck(truck)
+    factories.TruckFactory(year=2005)
+    factories.TruckFactory(year=2010)
     assert len(TruckRepository.get_all_trucks()) == 2
     service_truck.delete_truck(1)
     assert len(TruckRepository.get_all_trucks()) == 1
 
 @pytest.mark.django_db
 def test_update_truck():
-    truck = {"year": 2005}
-    service_truck.add_truck(truck)
+    factories.TruckFactory(year=2005)
     service_truck.update_truck(1, {"year": 2010})
     assert TruckRepository.get_truck(1).year == 2010
 
