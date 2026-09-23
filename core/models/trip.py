@@ -36,8 +36,10 @@ class Trip(models.Model):
     def validate_complete(self):
         if self.status != Trip.TripStatus.IN_PROGRESS:
             raise ValidationError("The trip must be started to end it")
-        if not self.arrival_time or not self.departure_time:
-            raise ValidationError("The trip missing arrival or departure time")
+        if self.departure_time and self.arrival_time:
+            if self.departure_time > self.arrival_time:
+                raise ValidationError("departure_time cannot be greater than arrival_time") #moved from full clean here
+        #validation of departure and arrival time only done for official times not planned
 
     def validate_incomplete(self):
         if self.status == Trip.TripStatus.COMPLETE:
@@ -100,6 +102,8 @@ class Trip(models.Model):
         truck = self.truck
         self.validate_driver_available()
         self.validate_truck_available()
+        if self.status != Trip.TripStatus.PLANNED:
+            raise ValidationError("only planned trips can be started")
         if driver.get_trips_active().exclude(id=self.id).exists():
             raise ValidationError("Driver already has an active trip")
         if truck.get_trips_active().exclude(id=self.id).exists():
@@ -112,9 +116,7 @@ class Trip(models.Model):
         if self.status == Trip.TripStatus.IN_PROGRESS:
             if self.departure_time is None:
                 raise ValidationError("departure_time is required")
-        if self.departure_time and self.arrival_time:
-            if self.departure_time > self.arrival_time:
-                raise ValidationError("departure_time cannot be greater than arrival_time")
+
 
     def __str__(self):
         return f"Trip {self.id}: {self.start} → {self.end} ({self.status})"

@@ -31,19 +31,24 @@ def update_trip(trip_id,data):
         # HANDLE DATETIME FIELDS
         if key in ("departure_time", "arrival_time"):
             # Convert string → datetime
-            dt = datetime.fromisoformat(value)
+            dt = value
+            if isinstance(dt, str):
+                dt = datetime.fromisoformat(dt)
             # Convert naive → aware
             aware_dt = make_aware_if_naive(dt)
             setattr(trip, key, aware_dt)
-
         elif key == 'driver':
-            setattr(trip, key, DriverRepository.get_driver(value))
-            if value is None:
+            driver = DriverRepository.get_driver(value)
+            if driver is None:
                 raise ValidationError("Driver not found")
+            else:
+                setattr(trip, key, driver)
         elif key == 'truck':
-            setattr(trip, key, TruckRepository.get_truck(value))
-            if value is None:
+            truck = TruckRepository.get_truck(value)
+            if truck is None:
                 raise ValidationError("Truck not found")
+            else:
+                setattr(trip, key, truck)
         else:
             setattr(trip,key,value)
     trip.full_clean()
@@ -66,7 +71,18 @@ def assign_driver_to_trip(trip_id,driver_id):
     trip.full_clean()
     trip.save()
 
-    return trip
+def assign_truck_to_trip(trip_id,truck_id):
+    trip = TripRepository.get_trip(trip_id)
+    truck = Truck.objects.filter(id=truck_id).first()
+    if truck is None:
+        raise ValidationError("No truck found")
+    if trip is None:
+        raise ValidationError("No trip found")
+    if trip.status != Trip.TripStatus.PLANNED:
+        raise ValidationError("Trip is not in planning process: ")
+    trip.truck = truck
+    trip.full_clean()
+    trip.save()
 #TRIP STATE MACHINE SERVICES --------
 
 @transaction.atomic
@@ -97,9 +113,9 @@ def complete_trip(trip_id):
     if trip is None:
         raise ValidationError("No trip found")
 
+    trip.arrival_time = timezone.now()
     trip.validate_complete()
     trip.status = trip.TripStatus.COMPLETE
-    trip.arrival_time = timezone.now()
 
     driver = trip.driver
     truck = trip.truck

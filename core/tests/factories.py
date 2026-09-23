@@ -11,9 +11,12 @@ class DriverFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Driver
 
+
 class TripFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Trip
 
+    start = "vancouver"
+    end = "calgary"
     departure_time = None
     arrival_time = None
