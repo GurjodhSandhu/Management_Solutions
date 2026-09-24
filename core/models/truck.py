@@ -1,6 +1,8 @@
 from django.core.exceptions import ValidationError
 from django.core.validators import MinLengthValidator, MaxLengthValidator, MinValueValidator, MaxValueValidator
 from django.db import models
+from django.db.models import QuerySet
+
 
 # Create your models here.
 
@@ -27,30 +29,26 @@ class Truck(models.Model):
     truck_status = models.CharField(choices = TruckStatus.choices,default=TruckStatus.AVAILABLE, max_length= 5)
     truck_location = models.CharField(choices=TruckLocation.choices,default=TruckLocation.AT_DEPOT, max_length=3)
 
-    def mark_in_repair(self):
+    def mark_in_repair(self) -> None:
         self.truck_status = Truck.TruckStatus.IN_REPAIR
 
-    def mark_unavailable(self):
+    def mark_unavailable(self) -> None:
         self.truck_status = Truck.TruckStatus.UNAVAILABLE
 
-    def mark_available(self):
+    def mark_available(self) -> None:
         self.truck_status = Truck.TruckStatus.AVAILABLE
 
-    def mark_out_of_service(self):
+    def mark_out_of_service(self) -> None:
         self.get_trips_active()
         self.truck_status = Truck.TruckStatus.OUT_OF_SERVICE
 
-    def get_drivers(self):
+    def get_drivers(self) -> QuerySet:
         return self.drivers.all()
 
-    #todo remove validate_active_trip it has invalid logic i.e trip id = truck id
-    def validate_active_trip(self):
-        if self.get_trips_active().exclude(id=self.id).exists():
-            raise ValidationError("Truck is on an active trip ")
-
-    def get_trips_active(self):
+    def get_trips_active(self) -> QuerySet:
         return self.trips.filter(status="inpro")
-    def get_all_trips(self):
+
+    def get_all_trips(self) -> QuerySet:
         return self.trips.all()
 
     def __str__(self):

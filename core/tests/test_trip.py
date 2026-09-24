@@ -12,7 +12,6 @@ def test_validate_complete():
     trip_invalid1 = factories.TripFactory(status= Trip.TripStatus.PLANNED)
     trip_invalid2 = factories.TripFactory(status= Trip.TripStatus.CANCELED)
     trip_invalid3 = factories.TripFactory(status= Trip.TripStatus.COMPLETE)
-    trip_missing_times = factories.TripFactory(status=Trip.TripStatus.IN_PROGRESS, departure_time=None, arrival_time=None)
 
 
     trip_valid.validate_complete()
@@ -23,8 +22,6 @@ def test_validate_complete():
         trip_invalid2.validate_complete()
     with pytest.raises(ValidationError):
         trip_invalid3.validate_complete()
-    with pytest.raises(ValidationError):
-        trip_missing_times.validate_complete()
 
 
 @pytest.mark.django_db

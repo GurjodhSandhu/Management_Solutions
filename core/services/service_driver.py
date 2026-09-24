@@ -1,16 +1,19 @@
 from django.core.exceptions import ValidationError
+from django.db import transaction
 
 from core.models import Driver,Truck
 from core.repositories import DriverRepository
 
 
-def add_driver(data):
+@transaction.atomic
+def add_driver(data: dict) -> Driver:
     driver = Driver(**data)
     driver.clean()
     driver.save()
     return driver
 
-def update_driver(driver_id,data):
+@transaction.atomic
+def update_driver(driver_id: int, data: dict) -> Driver | None:
     driver = DriverRepository.get_driver(driver_id)
     if driver is None:
         return None
@@ -21,10 +24,12 @@ def update_driver(driver_id,data):
                 setattr(driver,key,truck)
                 continue
             setattr(driver, key, value)
+        driver.clean()
         driver.save()
         return driver
 
-def assign_truck_to_driver(driver_id,truck_id):
+@transaction.atomic
+def assign_truck_to_driver(driver_id: int, truck_id: int) -> Driver | None:
     driver = DriverRepository.get_driver(driver_id)
     if driver is None:
         return None
@@ -42,7 +47,8 @@ def assign_truck_to_driver(driver_id,truck_id):
     driver.save()
     return driver
 
-def remove_truck_from_driver(driver_id):
+@transaction.atomic
+def remove_truck_from_driver(driver_id: int) -> Driver | None:
     driver = DriverRepository.get_driver(driver_id)
     if driver is None:
         return None

@@ -1,8 +1,6 @@
 from django.core.exceptions import ValidationError
 from django.db import models
-
 from . import Driver, Truck
-from .driver import Driver
 
 class Trip(models.Model):
     start = models.CharField(max_length=255)
@@ -10,8 +8,8 @@ class Trip(models.Model):
     arrival_time = models.DateTimeField(null=True, blank=True)
     departure_time = models.DateTimeField(null=True, blank=True)
 
-    driver = models.ForeignKey(Driver,on_delete=models.SET_NULL,null=True,blank=True,related_name='trips')
-    truck = models.ForeignKey(Truck,on_delete=models.SET_NULL,null=True,blank=True,related_name='trips')
+    driver = models.ForeignKey("core.Driver",on_delete=models.SET_NULL,null=True,blank=True,related_name='trips')
+    truck = models.ForeignKey("core.Truck",on_delete=models.SET_NULL,null=True,blank=True,related_name='trips')
 
     planned_miles = models.FloatField(default=0)
     actual_miles = models.FloatField(default=0)
@@ -33,7 +31,7 @@ class Trip(models.Model):
 
 
     #Trip state machine validation -----------------
-    def validate_complete(self):
+    def validate_complete(self) -> None:
         if self.status != Trip.TripStatus.IN_PROGRESS:
             raise ValidationError("The trip must be started to end it")
         if self.departure_time and self.arrival_time:
@@ -41,37 +39,37 @@ class Trip(models.Model):
                 raise ValidationError("departure_time cannot be greater than arrival_time") #moved from full clean here
         #validation of departure and arrival time only done for official times not planned
 
-    def validate_incomplete(self):
+    def validate_incomplete(self) -> None:
         if self.status == Trip.TripStatus.COMPLETE:
             raise ValidationError("The trip was already completed")
         if self.status == Trip.TripStatus.CANCELED:
             raise ValidationError("The trip was already Canceled")
 
-    def validate_cancel(self):
+    def validate_cancel(self) -> None:
         if self.status == Trip.TripStatus.COMPLETE:
             raise ValidationError("The trip was already completed")
         if self.status != Trip.TripStatus.PLANNED:
             raise ValidationError("only planned trips can be cancelled")
 
-    def mark_in_progress(self):
+    def mark_in_progress(self) -> None:
         self.status = Trip.TripStatus.IN_PROGRESS
 
     #Truck/Driver assignment --------------
-    def validate_driver_available(self):
+    def validate_driver_available(self) -> None:
         driver = self.driver
         if driver is None:
             raise ValidationError("No driver found")
         if driver.driver_status != Driver.DriverStatus.AVAILABLE:
             raise ValidationError("Driver not available")
 
-    def validate_truck_available(self):
+    def validate_truck_available(self) -> None:
         truck = self.truck
         if truck is None:
             raise ValidationError("No truck found")
         if truck.truck_status != Truck.TruckStatus.AVAILABLE:
             raise ValidationError("Truck not available")
 
-    def validate_driver_time_conflicts(self):
+    def validate_driver_time_conflicts(self) -> None:
         driver = self.driver
         if driver is None:
             return
@@ -85,7 +83,7 @@ class Trip(models.Model):
             elif planned_trip.departure_time < self.arrival_time and planned_trip.arrival_time > self.departure_time:
                 raise ValidationError("driver has conflicting trip planned")
 
-    def validate_truck_time_conflicts(self):
+    def validate_truck_time_conflicts(self) -> None:
         truck = self.truck
         if truck is None:
             return
@@ -97,7 +95,7 @@ class Trip(models.Model):
             elif planned_trip.departure_time < self.arrival_time and planned_trip.arrival_time > self.departure_time:
                 raise ValidationError("truck has conflicting trip planned")
 
-    def validate_start(self):
+    def validate_start(self) -> None:
         driver = self.driver
         truck = self.truck
         self.validate_driver_available()

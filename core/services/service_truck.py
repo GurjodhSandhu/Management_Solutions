@@ -1,25 +1,28 @@
 from django.core.exceptions import ValidationError
+from django.db import transaction
 
-from core.models import Truck, Driver
+from core.models import Truck
 from core.repositories import TruckRepository
 
-
-def add_truck(data):
+@transaction.atomic
+def add_truck(data: dict) -> Truck:
     truck = Truck(**data)
     truck.full_clean()
     truck.save()
     return truck
 
-def delete_truck(truck_id):
+@transaction.atomic
+def delete_truck(truck_id: int) -> bool:
     truck = TruckRepository.get_truck(truck_id)
     if truck is None:
-        return None
+        return False
     if truck.get_trips_active():
         raise ValidationError("Truck is on an active trip cannot remove")
     TruckRepository.delete_truck(truck_id)
     return True
 
-def update_truck(truck_id,data):
+@transaction.atomic
+def update_truck(truck_id: int,data: dict) -> Truck|None:
     truck = TruckRepository.get_truck(truck_id)
     if truck is None:
         return None
@@ -30,13 +33,14 @@ def update_truck(truck_id,data):
         truck.save()
         return truck
 
-def remove_all_drivers_from_truck(truck_id):
+@transaction.atomic
+def remove_all_drivers_from_truck(truck_id: int) -> bool | None:
     truck = TruckRepository.get_truck(truck_id)
     if truck is None:
-        return None
+        raise ValidationError("Truck not found")
     drivers = truck.get_drivers()
     if not drivers.exists():
-        return None
+        return True
     else:
         for driver in drivers:
             if driver.get_trips_active().exists():

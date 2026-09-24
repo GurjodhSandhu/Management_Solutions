@@ -1,10 +1,10 @@
 import pytest
 from django.core.exceptions import ValidationError
-
 from core.tests import factories
 from core.models import Trip,Truck,Driver
 from core.services import service_trip
-from datetime import datetime,timezone
+from datetime import datetime
+from django.utils import timezone
 
 
 
@@ -25,12 +25,14 @@ def test_start_trip_valid_datetime():
     driver = factories.DriverFactory()
     truck = factories.TruckFactory()
 
-    trip = factories.TripFactory(driver=driver, truck=truck,departure_time=datetime(2026,1,1),arrival_time=datetime(2026,1,2,tzinfo=timezone.utc), )
+    trip = factories.TripFactory(driver=driver, truck=truck,
+                                 departure_time=timezone.make_aware(datetime(2026,1,1)),
+                                 arrival_time=timezone.make_aware(datetime(2026,1,2)))
     service_trip.start_trip(trip.id)
 
     assert Trip.objects.get(id=trip.id).status == Trip.TripStatus.IN_PROGRESS
-    assert Trip.objects.get(id=trip.id).departure_time.date() == datetime.now().date()
-    assert Trip.objects.get(id=trip.id).arrival_time == datetime(2026,1,2,tzinfo=timezone.utc)
+    assert Trip.objects.get(id=trip.id).departure_time.date() == timezone.now().date()
+    assert Trip.objects.get(id=trip.id).arrival_time == timezone.make_aware(datetime(2026,1,2))
 
 @pytest.mark.django_db
 def test_start_trip_invalid_missing_truck_driver():

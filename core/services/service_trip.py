@@ -1,4 +1,4 @@
-from datetime import timezone, datetime
+from datetime import  datetime
 from django.utils import timezone
 
 from django.core.exceptions import ValidationError
@@ -8,22 +8,22 @@ from core.repositories import TripRepository
 from core.models import Trip,Driver,Truck
 from core.repositories import DriverRepository, TruckRepository
 
-
-def new_trip(data):
+@transaction.atomic
+def new_trip(data: dict) -> Trip:
     new_trip = Trip(**data)
     new_trip.full_clean()
     new_trip.save()
     return new_trip
 
-def make_aware_if_naive(dt):
+def make_aware_if_naive(dt) -> datetime:
     if dt is None:
         return None
     if timezone.is_naive(dt):
         return timezone.make_aware(dt)
     return dt
 
-
-def update_trip(trip_id,data):
+@transaction.atomic
+def update_trip(trip_id: int,data: dict) -> Trip:
     trip = TripRepository.get_trip(trip_id)
     if trip is None:
         return None
@@ -55,10 +55,12 @@ def update_trip(trip_id,data):
     trip.save()
     return trip
 
-def delete_trip(trip_id):
+@transaction.atomic
+def delete_trip(trip_id: int) -> None:
     TripRepository.delete_trip(trip_id)
 
-def assign_driver_to_trip(trip_id,driver_id):
+@transaction.atomic
+def assign_driver_to_trip(trip_id: int,driver_id: int) -> None:
     trip = TripRepository.get_trip(trip_id)
     driver = Driver.objects.filter(id=driver_id).first()
     if driver is None:
@@ -71,7 +73,8 @@ def assign_driver_to_trip(trip_id,driver_id):
     trip.full_clean()
     trip.save()
 
-def assign_truck_to_trip(trip_id,truck_id):
+@transaction.atomic
+def assign_truck_to_trip(trip_id: int,truck_id: int) -> None:
     trip = TripRepository.get_trip(trip_id)
     truck = Truck.objects.filter(id=truck_id).first()
     if truck is None:
@@ -86,7 +89,7 @@ def assign_truck_to_trip(trip_id,truck_id):
 #TRIP STATE MACHINE SERVICES --------
 
 @transaction.atomic
-def start_trip(trip_id):
+def start_trip(trip_id: int) -> Trip:
     trip = TripRepository.get_trip(trip_id)
     if trip is None:
         raise ValidationError("No trip found")
@@ -108,7 +111,7 @@ def start_trip(trip_id):
     return trip
 
 @transaction.atomic
-def complete_trip(trip_id):
+def complete_trip(trip_id: int) -> Trip:
     trip = TripRepository.get_trip(trip_id)
     if trip is None:
         raise ValidationError("No trip found")
@@ -132,7 +135,7 @@ def complete_trip(trip_id):
     return trip
 
 @transaction.atomic
-def incomplete_trip(trip_id):
+def incomplete_trip(trip_id: int) -> Trip:
     trip = TripRepository.get_trip(trip_id)
     if trip is None:
         raise ValidationError("No trip found")
@@ -154,7 +157,7 @@ def incomplete_trip(trip_id):
     return trip
 
 @transaction.atomic
-def cancel_trip(trip_id):
+def cancel_trip(trip_id: int) -> Trip:
     trip = TripRepository.get_trip(trip_id)
     if trip is None:
         raise ValidationError("No trip found")

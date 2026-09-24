@@ -1,10 +1,10 @@
 from django.core.exceptions import ValidationError
 from django.db import models
+from django.db.models import QuerySet
 
-from .truck import Truck
 
 class Driver(models.Model):
-    truck = models.ForeignKey(Truck,on_delete=models.SET_NULL,null=True,blank=True,related_name='drivers')
+    truck = models.ForeignKey('core.Truck',on_delete=models.SET_NULL,null=True,blank=True,related_name='drivers')
     driver_name = models.CharField(max_length=255, null=True,blank=True)
     driver_licensenumber = models.CharField(max_length=30, null=True,blank=True)
 
@@ -14,32 +14,32 @@ class Driver(models.Model):
 
     driver_status = models.CharField(choices=DriverStatus.choices,default=DriverStatus.AVAILABLE,max_length=25)
 
-    def validate_truck(self):
+    def validate_truck(self) -> None:
         if self.truck is None:
             raise ValidationError("Driver has no truck")
-        if self.truck.truck_status == Truck.TruckStatus.UNAVAILABLE:
+        if self.truck.truck_status == self.truck.TruckStatus.UNAVAILABLE:
             raise ValidationError("Truck is unavailable")
-        if self.truck.truck_status == Truck.TruckStatus.OUT_OF_SERVICE:
+        if self.truck.truck_status == self.truck.TruckStatus.OUT_OF_SERVICE:
             raise ValidationError("Truck is out of service")
-        if self.truck.truck_status == Truck.TruckStatus.IN_REPAIR:
+        if self.truck.truck_status == self.truck.TruckStatus.IN_REPAIR:
             raise ValidationError("Truck is being repaired")
 
-    def get_trips(self):
+    def get_trips(self) -> QuerySet:
         return self.trips.all()
 
-    def get_trips_active(self):
+    def get_trips_active(self) -> QuerySet:
         return self.trips.filter(status="inpro")
 
-    def get_trips_planned(self):
+    def get_trips_planned(self) -> QuerySet:
         return self.trips.filter(status="plan")
 
-    def mark_unavailable(self):
+    def mark_unavailable(self) -> None:
         self.driver_status = Driver.DriverStatus.UNAVAILABLE
 
-    def mark_available(self):
+    def mark_available(self) -> None:
         self.driver_status = Driver.DriverStatus.AVAILABLE
 
-    def validate_available(self):
+    def validate_available(self) -> None:
         if self.driver_status == Driver.DriverStatus.UNAVAILABLE:
             raise ValidationError("Driver unavailable")
 
@@ -50,5 +50,4 @@ class Driver(models.Model):
         super().clean()
 
     def save(self, *args, **kwargs):
-        self.full_clean()  # ensures clean() runs
         super().save(*args, **kwargs)
