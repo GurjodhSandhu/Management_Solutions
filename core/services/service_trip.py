@@ -116,6 +116,11 @@ def complete_trip(trip_id: int) -> Trip:
     if trip is None:
         raise ValidationError("No trip found")
 
+    if trip.driver is None:
+        raise ValidationError("Trip has no driver assigned")
+    if trip.truck is None:
+        raise ValidationError("Trip has no truck assigned")
+
     trip.arrival_time = timezone.now()
     trip.validate_complete()
     trip.status = trip.TripStatus.COMPLETE
@@ -143,6 +148,10 @@ def incomplete_trip(trip_id: int) -> Trip:
     trip.validate_incomplete()
     trip.status = trip.TripStatus.INCOMPLETE
 
+    if trip.driver is None:
+        raise ValidationError("Trip has no driver assigned")
+    if trip.truck is None:
+        raise ValidationError("Trip has no truck assigned")
     driver = trip.driver
     truck = trip.truck
 
@@ -164,6 +173,11 @@ def cancel_trip(trip_id: int) -> Trip:
 
     trip.validate_cancel()
     trip.status =  Trip.TripStatus.CANCELED
+
+    if trip.driver is None:
+        raise ValidationError("Trip has no driver assigned")
+    if trip.truck is None:
+        raise ValidationError("Trip has no truck assigned")
 
     driver = trip.driver
     truck = trip.truck
