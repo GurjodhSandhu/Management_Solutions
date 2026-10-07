@@ -58,3 +58,13 @@ def remove_truck_from_driver(driver_id: int) -> Driver | None:
     driver.clean()
     driver.save()
     return driver
+
+@transaction.atomic
+def delete_driver(driver_id: int) -> Driver | None:
+    driver = DriverRepository.get_driver(driver_id)
+    if driver is None:
+        return None
+    if driver.get_trips_active():
+        raise ValidationError("driver is on an active trip")
+    DriverRepository.delete_driver(driver_id)
+    return driver
