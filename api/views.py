@@ -1,7 +1,9 @@
 from typing import Any
 
 from django.db.migrations import serializer
+from django.db.models import Model
 from rest_framework import viewsets, status
+from rest_framework.decorators import action
 from rest_framework.request import Request
 from rest_framework.response import Response
 from django.core.exceptions import ValidationError
@@ -120,6 +122,58 @@ class TripViewSet(viewsets.ModelViewSet):
             trip_id = kwargs['pk']
             service_trip.delete_trip(trip_id)
             return Response(status=status.HTTP_204_NO_CONTENT)
+
+        except ValidationError as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'])
+    def start(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        try:
+            trip = self.get_object()
+            trip_id = trip.id
+            service_trip.start_trip(trip_id)
+            trip.refresh_from_db()
+            output = self.get_serializer(trip)
+            return Response(output.data,status=status.HTTP_200_OK)
+
+        except ValidationError as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'])
+    def complete(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        try:
+            trip = self.get_object()
+            trip_id = trip.id
+            service_trip.complete_trip(trip_id)
+            trip.refresh_from_db()
+            output = self.get_serializer(trip)
+            return Response(output.data,status=status.HTTP_200_OK)
+
+        except ValidationError as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'])
+    def incomplete(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        try:
+            trip = self.get_object()
+            trip_id = trip.id
+            service_trip.incomplete_trip(trip_id)
+            trip.refresh_from_db()
+            output = self.get_serializer(trip)
+            return Response(output.data,status=status.HTTP_200_OK)
+
+        except ValidationError as e:
+            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    @action(detail=True, methods=['post'])
+    def canceltrip(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        try:
+            trip = self.get_object()
+            trip_id = trip.id
+            service_trip.cancel_trip(trip_id)
+            trip.refresh_from_db()
+            output = self.get_serializer(trip)
+            return Response(output.data,status=status.HTTP_200_OK)
 
         except ValidationError as e:
             return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
