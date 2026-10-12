@@ -109,8 +109,12 @@ class TripViewSet(viewsets.ModelViewSet):
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
         try:
+            serializer = self.get_serializer(data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+
             trip_id = kwargs['pk']
             trip = service_trip.update_trip(trip_id, serializer.validated_data)
+
             output = self.get_serializer(trip)
             return Response(output.data, status=status.HTTP_200_OK)
 
