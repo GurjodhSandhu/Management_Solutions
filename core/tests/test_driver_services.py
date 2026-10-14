@@ -9,9 +9,9 @@ from core.models import Truck, Driver, Trip
 
 @pytest.mark.django_db
 def test_add_driver():
-    service_driver.add_driver({"driver_name": "bob"})
+    driver = service_driver.add_driver({"driver_name": "bob"})
 
-    assert DriverRepository.get_driver(1).driver_name == "bob"
+    assert DriverRepository.get_driver(driver.id).driver_name == "bob"
 
 @pytest.mark.django_db
 def test_update_driver():
