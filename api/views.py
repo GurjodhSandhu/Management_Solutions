@@ -1,20 +1,35 @@
 from typing import Any
 
-from django.db.migrations import serializer
-from django.db.models import Model
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
+from rest_framework.views import APIView
 from django.core.exceptions import ValidationError
 from core.models import Truck, Driver, Trip
 from .serializers import TruckSerializer, DriverSerializer, TripSerializer
 
 from core.services import service_truck, service_driver, service_trip
+from api.permission import IsAdmin
+
+class MeView(APIView):
+    Permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        user = request.user
+        role = user.groups.first().name if user.groups.exists() else None
+
+        return Response({
+            "id": user.id,
+            "username": user.username,
+            "role": role,
+        })
 
 class TruckViewSet(viewsets.ModelViewSet):
     queryset = Truck.objects.all()
     serializer_class = TruckSerializer
+    permission_classes = [IsAuthenticated, IsAdmin]
 
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         try:
