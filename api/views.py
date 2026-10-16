@@ -11,10 +11,16 @@ from core.models import Truck, Driver, Trip
 from .serializers import TruckSerializer, DriverSerializer, TripSerializer
 
 from core.services import service_truck, service_driver, service_trip
-from api.permission import IsAdmin
+from api.permission import IsAdminOrDispatcher
+
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework.throttling import ScopedRateThrottle
+
+class LoginThrottleView(TokenObtainPairView):
+    throttle_scope = "login"
 
 class MeView(APIView):
-    Permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         user = request.user
@@ -29,7 +35,7 @@ class MeView(APIView):
 class TruckViewSet(viewsets.ModelViewSet):
     queryset = Truck.objects.all()
     serializer_class = TruckSerializer
-    permission_classes = [IsAuthenticated, IsAdmin]
+    permission_classes = [IsAuthenticated,IsAdminOrDispatcher]
 
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         try:
@@ -71,6 +77,7 @@ class TruckViewSet(viewsets.ModelViewSet):
 class DriverViewSet(viewsets.ModelViewSet):
     queryset = Driver.objects.all()
     serializer_class = DriverSerializer
+    permission_classes = [IsAuthenticated,IsAdminOrDispatcher]
 
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         try:
@@ -108,6 +115,8 @@ class DriverViewSet(viewsets.ModelViewSet):
 class TripViewSet(viewsets.ModelViewSet):
     queryset = Trip.objects.all()
     serializer_class = TripSerializer
+    permission_classes = [IsAuthenticated,IsAdminOrDispatcher]
+
 
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 

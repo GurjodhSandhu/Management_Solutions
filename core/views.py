@@ -1,4 +1,5 @@
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
 from django.shortcuts import render, redirect
 from core.models import Truck, Driver, Trip
@@ -8,7 +9,9 @@ from .services.service_truck import update_truck
 from .services.service_trip import update_trip
 from .repositories import TruckRepository, TripRepository, DriverRepository
 
+
 # Create your views here.
+@login_required
 def index(request):
     context = {}
     trips = TripRepository.get_all_trips()
@@ -18,13 +21,14 @@ def index(request):
     context["trucks"] = trucks
     context["drivers"] = drivers
     return render(request, 'home.html', context)
-
+@login_required
 def truck_view(request):
     context = {}
     trucks = TruckRepository.get_all_trucks() #queryset (list) of truck objects
     context["trucks"]=trucks
     return render(request, "truck/truck.html", {'trucks': trucks}) #sends truck objects in trucks
 
+@login_required
 def truck_modify(request,id):
     context = {}
     truck = TruckRepository.get_truck(id)
@@ -38,11 +42,11 @@ def truck_modify(request,id):
         except ValidationError as e:
             context["message"] = e
     return render(request,"truck/truck_modify.html", context)
-
+@login_required
 def driver_view(request):
     drivers = DriverRepository.get_all_drivers()
     return render(request, "driver/driver.html",{"drivers": drivers})
-
+@login_required
 def driver_modify(request,id):
     context = {}
     driver = DriverRepository.get_driver(id)
@@ -57,11 +61,11 @@ def driver_modify(request,id):
             context["message"] = e
 
     return render(request,"driver/driver_modify.html", context)
-
+@login_required
 def trip_view(request):
     trip = TripRepository.get_all_trips()
     return render(request, "trip/trip.html",{"trips": trip})
-
+@login_required
 def trip_modify(request,id):
     context = {}
     trip = TripRepository.get_trip(id)
@@ -75,7 +79,7 @@ def trip_modify(request,id):
         except ValidationError as e:
             context["message"] = e
     return render(request,"trip/trip_modify.html", context)
-
+@login_required
 def trip_action(request,id):
     context = {}
     trip = TripRepository.get_trip(id)

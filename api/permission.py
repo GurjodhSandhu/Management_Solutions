@@ -8,3 +8,15 @@ class IsAdmin(BasePermission):
 
         # Allow users in the "admin" group
         return request.user.groups.filter(name="admin").exists()
+
+class IsDispatcher(BasePermission):
+    def has_permission(self, request, view):
+        return request.user.groups.filter(name="dispatcher").exists()
+
+class IsAdminOrDispatcher(BasePermission):
+    def has_permission(self, request, view):
+        return (
+                request.user.is_superuser or
+                request.user.groups.filter(name="dispatcher").exists() or
+                request.user.groups.filter(name="admin").exists()
+                )
