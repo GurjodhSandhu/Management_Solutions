@@ -14,6 +14,9 @@ class Driver(models.Model):
 
     driver_status = models.CharField(choices=DriverStatus.choices,default=DriverStatus.AVAILABLE,max_length=25)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     def validate_truck(self) -> None:
         if self.truck is None:
             raise ValidationError("Driver has no truck")
@@ -33,6 +36,8 @@ class Driver(models.Model):
     def get_trips_planned(self) -> QuerySet:
         return self.trips.filter(status="plan")
 
+    def get_conflicting_trips(self) -> QuerySet:
+        return self.trips.filter(status__in=["plan","inpro"] )
     def mark_unavailable(self) -> None:
         self.driver_status = Driver.DriverStatus.UNAVAILABLE
 

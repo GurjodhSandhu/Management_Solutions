@@ -5,7 +5,7 @@ class TruckFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Truck
 
-    truck_status = Truck.truck_status = Truck.TruckStatus.AVAILABLE
+    truck_status = Truck.TruckStatus.AVAILABLE
 
 class DriverFactory(factory.django.DjangoModelFactory):
     class Meta:

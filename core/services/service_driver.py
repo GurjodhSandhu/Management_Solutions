@@ -8,7 +8,7 @@ from core.repositories import DriverRepository
 @transaction.atomic
 def add_driver(data: dict) -> Driver:
     driver = Driver(**data)
-    driver.clean()
+    driver.full_clean()
     driver.save()
     return driver
 
@@ -32,16 +32,16 @@ def update_driver(driver_id: int, data: dict) -> Driver | None:
                     setattr(driver,key,truck)
                     continue
                 setattr(driver, key, value)
-        driver.clean()
+        driver.full_clean()
         driver.save()
         return driver
 
 @transaction.atomic
 def assign_truck_to_driver(driver_id: int, truck_id: int) -> Driver | None:
-    driver = DriverRepository.get_driver(driver_id)
+    driver = Driver.objects.select_for_update().filter(id=driver_id).first()
     if driver is None:
         return None
-    truck = Truck.objects.filter(id=truck_id).first()
+    truck = Truck.objects.select_for_update().filter(id=truck_id).first()
     if truck is None:
         return None
     if driver.truck:
@@ -51,7 +51,7 @@ def assign_truck_to_driver(driver_id: int, truck_id: int) -> Driver | None:
 
     driver.truck = truck
     driver.validate_truck()
-    driver.clean()
+    driver.full_clean()
     driver.save()
     return driver
 
@@ -63,7 +63,7 @@ def remove_truck_from_driver(driver_id: int) -> Driver | None:
     if driver.get_trips_active():
         raise ValidationError("driver is on an active trip")
     driver.truck = None
-    driver.clean()
+    driver.full_clean()
     driver.save()
     return driver
 

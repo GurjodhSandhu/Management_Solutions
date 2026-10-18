@@ -28,7 +28,8 @@ class Trip(models.Model):
         INCOMPLETE = 'inc',"incomplete"
 
     status = models.CharField(choices = TripStatus.choices,default=TripStatus.PLANNED, max_length= 10)
-
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     #Trip state machine validation -----------------
     def validate_complete(self) -> None:
@@ -77,13 +78,13 @@ class Trip(models.Model):
             return
         if not self.departure_time or not self.arrival_time:
             return
-        for planned_trip in driver.get_trips_planned():
+        for planned_trip in driver.get_conflicting_trips():
             if planned_trip.id == self.id: #if this trip
                 continue
             elif not planned_trip.departure_time or not planned_trip.arrival_time:
                 continue
             elif planned_trip.departure_time < self.arrival_time and planned_trip.arrival_time > self.departure_time:
-                raise ValidationError("driver has conflicting trip planned")
+                raise ValidationError("driver has conflicting trip planned or inprogress")
 
     def validate_truck_time_conflicts(self) -> None:
         truck = self.truck
@@ -91,11 +92,11 @@ class Trip(models.Model):
             return
         if not self.departure_time or not self.arrival_time:
             return
-        for planned_trip in truck.get_all_trips():
+        for planned_trip in truck.get_conflicting_trips():
             if planned_trip.id == self.id: continue
             elif not planned_trip.departure_time or not planned_trip.arrival_time: continue
             elif planned_trip.departure_time < self.arrival_time and planned_trip.arrival_time > self.departure_time:
-                raise ValidationError("truck has conflicting trip planned")
+                raise ValidationError("truck has conflicting trip planned or inprogress")
 
     def validate_start(self) -> None:
         driver = self.driver
@@ -116,6 +117,7 @@ class Trip(models.Model):
         if self.status == Trip.TripStatus.IN_PROGRESS:
             if self.departure_time is None:
                 raise ValidationError("departure_time is required")
+
 
 
     def __str__(self):

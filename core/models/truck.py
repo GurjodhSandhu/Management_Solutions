@@ -29,6 +29,9 @@ class Truck(models.Model):
     truck_status = models.CharField(choices = TruckStatus.choices,default=TruckStatus.AVAILABLE, max_length= 5)
     truck_location = models.CharField(choices=TruckLocation.choices,default=TruckLocation.AT_DEPOT, max_length=3)
 
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
     def mark_in_repair(self) -> None:
         self.truck_status = Truck.TruckStatus.IN_REPAIR
 
@@ -39,7 +42,6 @@ class Truck(models.Model):
         self.truck_status = Truck.TruckStatus.AVAILABLE
 
     def mark_out_of_service(self) -> None:
-        self.get_trips_active()
         self.truck_status = Truck.TruckStatus.OUT_OF_SERVICE
 
     def get_drivers(self) -> QuerySet:
@@ -47,6 +49,9 @@ class Truck(models.Model):
 
     def get_trips_active(self) -> QuerySet:
         return self.trips.filter(status="inpro")
+
+    def get_conflicting_trips(self) -> QuerySet:
+        return self.trips.filter(status__in=["inpro","plan"])
 
     def get_all_trips(self) -> QuerySet:
         return self.trips.all()
