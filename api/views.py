@@ -38,40 +38,31 @@ class TruckViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,IsAdminOrDispatcher]
 
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        try:
-            serializer = self.get_serializer(data=request.data, partial=True)
-            serializer.is_valid(raise_exception=True)
+        serializer = self.get_serializer(data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
 
-            truck = service_truck.add_truck(serializer.validated_data)
+        truck = service_truck.add_truck(serializer.validated_data)
 
-            output = self.get_serializer(truck)
-            return Response(output.data, status=status.HTTP_201_CREATED)
+        output = self.get_serializer(truck)
+        return Response(output.data, status=status.HTTP_201_CREATED)
 
-        except ValidationError as e:
-            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        try:
-            serializer = self.get_serializer(data=request.data, partial=True)
-            serializer.is_valid(raise_exception=True)
-            truck_id = kwargs.get('pk')
-            truck = service_truck.update_truck(truck_id, serializer.validated_data)
+        serializer = self.get_serializer(data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        truck_id = kwargs.get('pk')
+        truck = service_truck.update_truck(truck_id, serializer.validated_data)
 
-            output = self.get_serializer(truck)
+        output = self.get_object()
 
-            return Response(output.data, status=status.HTTP_200_OK)
+        return Response(output.data, status=status.HTTP_200_OK)
 
-        except ValidationError as e:
-            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        try:
-            truck_id = kwargs["pk"]
-            service_truck.delete_truck(truck_id)
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        truck_id = kwargs["pk"]
+        service_truck.delete_truck(truck_id)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-        except ValidationError as e:
-            return Response({'error': str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
 class DriverViewSet(viewsets.ModelViewSet):
@@ -80,37 +71,30 @@ class DriverViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,IsAdminOrDispatcher]
 
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        try:
-            serializer = self.get_serializer(data=request.data, partial=True)
-            serializer.is_valid(raise_exception=True)
-            driver = service_driver.add_driver(serializer.validated_data)
-            output = self.get_serializer(driver)
-            return Response(output.data, status=status.HTTP_201_CREATED)
 
-        except ValidationError as e:
-            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        serializer = self.get_serializer(data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        driver = service_driver.add_driver(serializer.validated_data)
+        output = self.get_serializer(driver)
+        return Response(output.data, status=status.HTTP_201_CREATED)
+
+
 
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        try:
-            serializer = self.get_serializer(data=request.data, partial=True)
-            serializer.is_valid(raise_exception=True)
-            driver_id = kwargs.get('pk')
+        serializer = self.get_serializer(data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        driver_id = kwargs.get('pk')
 
-            driver = service_driver.update_driver(driver_id, serializer.validated_data)
-            output = self.get_serializer(driver)
-            return Response(output.data, status=status.HTTP_200_OK)
+        driver = service_driver.update_driver(driver_id, serializer.validated_data)
+        output = self.self.get_object()
+        return Response(output.data, status=status.HTTP_200_OK)
 
-        except ValidationError as e:
-            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        try:
-            driver_id = kwargs["pk"]
-            service_driver.delete_driver(driver_id)
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        driver_id = kwargs["pk"]
+        service_driver.delete_driver(driver_id)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-        except ValidationError as e:
-            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 class TripViewSet(viewsets.ModelViewSet):
     queryset = Trip.objects.all()
@@ -120,88 +104,63 @@ class TripViewSet(viewsets.ModelViewSet):
 
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
-        try:
-            serializer = self.get_serializer(data=request.data, partial=True)
-            serializer.is_valid(raise_exception=True)
-            trip = service_trip.new_trip(serializer.validated_data)
-            output = self.get_serializer(trip)
-            return Response(output.data, status=status.HTTP_201_CREATED)
+        serializer = self.get_serializer(data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        trip = service_trip.new_trip(serializer.validated_data)
+        output = self.get_serializer(trip)
+        return Response(output.data, status=status.HTTP_201_CREATED)
 
-        except ValidationError as e:
-            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
-        try:
-            serializer = self.get_serializer(data=request.data, partial=True)
-            serializer.is_valid(raise_exception=True)
+        serializer = self.get_serializer(data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
 
-            trip_id = kwargs['pk']
-            trip = service_trip.update_trip(trip_id, serializer.validated_data)
+        trip_id = kwargs['pk']
+        trip = service_trip.update_trip(trip_id, serializer.validated_data)
 
-            output = self.get_serializer(trip)
-            return Response(output.data, status=status.HTTP_200_OK)
+        output = self.self.get_object()
+        return Response(output.data, status=status.HTTP_200_OK)
 
-        except ValidationError as e:
-            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        try:
-            trip_id = kwargs['pk']
-            service_trip.delete_trip(trip_id)
-            return Response(status=status.HTTP_204_NO_CONTENT)
+        trip_id = kwargs['pk']
+        service_trip.delete_trip(trip_id)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
-        except ValidationError as e:
-            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['post'])
     def start(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        try:
-            trip = self.get_object()
-            trip_id = trip.id
-            service_trip.start_trip(trip_id)
-            trip.refresh_from_db()
-            output = self.get_serializer(trip)
-            return Response(output.data,status=status.HTTP_200_OK)
+        trip = self.get_object()
+        trip_id = trip.id
+        service_trip.start_trip(trip_id)
+        output = self.self.get_object()
+        return Response(output.data,status=status.HTTP_200_OK)
 
-        except ValidationError as e:
-            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['post'])
     def complete(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        try:
-            trip = self.get_object()
-            trip_id = trip.id
-            service_trip.complete_trip(trip_id)
-            trip.refresh_from_db()
-            output = self.get_serializer(trip)
-            return Response(output.data,status=status.HTTP_200_OK)
+        trip = self.get_object()
+        trip_id = trip.id
+        service_trip.complete_trip(trip_id)
+        output = self.self.get_object()
+        return Response(output.data,status=status.HTTP_200_OK)
 
-        except ValidationError as e:
-            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['post'])
     def incomplete(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        try:
-            trip = self.get_object()
-            trip_id = trip.id
-            service_trip.incomplete_trip(trip_id)
-            trip.refresh_from_db()
-            output = self.get_serializer(trip)
-            return Response(output.data,status=status.HTTP_200_OK)
+        trip = self.get_object()
+        trip_id = trip.id
+        service_trip.incomplete_trip(trip_id)
+        output = self.self.get_object()
+        return Response(output.data,status=status.HTTP_200_OK)
 
-        except ValidationError as e:
-            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
     @action(detail=True, methods=['post'])
     def canceltrip(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        try:
-            trip = self.get_object()
-            trip_id = trip.id
-            service_trip.cancel_trip(trip_id)
-            trip.refresh_from_db()
-            output = self.get_serializer(trip)
-            return Response(output.data,status=status.HTTP_200_OK)
+        trip = self.get_object()
+        trip_id = trip.id
+        service_trip.cancel_trip(trip_id)
+        output = self.self.get_object()
+        return Response(output.data,status=status.HTTP_200_OK)
 
-        except ValidationError as e:
-            return Response({'error':str(e)}, status=status.HTTP_400_BAD_REQUEST)

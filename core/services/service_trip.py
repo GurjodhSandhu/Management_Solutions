@@ -21,7 +21,23 @@ def make_aware_if_naive(dt) -> datetime:
     if timezone.is_naive(dt):
         return timezone.make_aware(dt)
     return dt
+ALLOWED_TRIP_UPDATE_FIELDS = {
+    "start",
+    "end",
+    "arrival_time",
+    "departure_time",
 
+    "driver",
+    "truck",
+
+    "planned_miles",
+    "actual_miles",
+    "loaded_miles",
+    "empty_miles",
+    "cpm",
+    "pay",
+    "status",
+}
 @transaction.atomic
 def update_trip(trip_id: int,data: dict) -> Trip:
     trip = TripRepository.get_trip(trip_id)
@@ -29,28 +45,29 @@ def update_trip(trip_id: int,data: dict) -> Trip:
         return None
     for key,value in data.items():
         # HANDLE DATETIME FIELDS
-        if key in ("departure_time", "arrival_time"):
-            # Convert string → datetime
-            dt = value
-            if isinstance(dt, str):
-                dt = datetime.fromisoformat(dt)
-            # Convert naive → aware
-            aware_dt = make_aware_if_naive(dt)
-            setattr(trip, key, aware_dt)
-        elif key == 'driver':
-            driver = DriverRepository.get_driver(value)
-            if driver is None:
-                raise ValidationError("Driver not found")
+        if key in ALLOWED_TRIP_UPDATE_FIELDS:
+            if key in ("departure_time", "arrival_time"):
+                # Convert string → datetime
+                dt = value
+                if isinstance(dt, str):
+                    dt = datetime.fromisoformat(dt)
+                # Convert naive → aware
+                aware_dt = make_aware_if_naive(dt)
+                setattr(trip, key, aware_dt)
+            elif key == 'driver':
+                driver = DriverRepository.get_driver(value)
+                if driver is None:
+                    raise ValidationError("Driver not found")
+                else:
+                    setattr(trip, key, driver)
+            elif key == 'truck':
+                truck = TruckRepository.get_truck(value)
+                if truck is None:
+                    raise ValidationError("Truck not found")
+                else:
+                    setattr(trip, key, truck)
             else:
-                setattr(trip, key, driver)
-        elif key == 'truck':
-            truck = TruckRepository.get_truck(value)
-            if truck is None:
-                raise ValidationError("Truck not found")
-            else:
-                setattr(trip, key, truck)
-        else:
-            setattr(trip,key,value)
+                setattr(trip,key,value)
     trip.full_clean()
     trip.save()
     return trip
@@ -89,7 +106,7 @@ def assign_truck_to_trip(trip_id: int,truck_id: int) -> None:
 #TRIP STATE MACHINE SERVICES --------
 
 @transaction.atomic
-def start_trip(trip_id: int) -> Trip:
+def start_trip(trip_id: int) -> Trip: #planned -> start
     trip = TripRepository.get_trip(trip_id)
     if trip is None:
         raise ValidationError("No trip found")
@@ -111,7 +128,7 @@ def start_trip(trip_id: int) -> Trip:
     return trip
 
 @transaction.atomic
-def complete_trip(trip_id: int) -> Trip:
+def complete_trip(trip_id: int) -> Trip: #inprogress -> complete
     trip = TripRepository.get_trip(trip_id)
     if trip is None:
         raise ValidationError("No trip found")
@@ -140,7 +157,7 @@ def complete_trip(trip_id: int) -> Trip:
     return trip
 
 @transaction.atomic
-def incomplete_trip(trip_id: int) -> Trip:
+def incomplete_trip(trip_id: int) -> Trip: #inprogress -> incomplete
     trip = TripRepository.get_trip(trip_id)
     if trip is None:
         raise ValidationError("No trip found")
@@ -166,7 +183,7 @@ def incomplete_trip(trip_id: int) -> Trip:
     return trip
 
 @transaction.atomic
-def cancel_trip(trip_id: int) -> Trip:
+def cancel_trip(trip_id: int) -> Trip: #planned -> canceled
     trip = TripRepository.get_trip(trip_id)
     if trip is None:
         raise ValidationError("No trip found")
@@ -174,17 +191,9 @@ def cancel_trip(trip_id: int) -> Trip:
     trip.validate_cancel()
     trip.status =  Trip.TripStatus.CANCELED
 
-    if trip.driver is None:
-        raise ValidationError("Trip has no driver assigned")
-    if trip.truck is None:
-        raise ValidationError("Trip has no truck assigned")
 
     driver = trip.driver
     truck = trip.truck
-
-    driver.mark_available()
-    truck.mark_available()
-
     trip.full_clean()
 
     driver.save()

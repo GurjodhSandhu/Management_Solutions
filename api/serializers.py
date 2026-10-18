@@ -28,4 +28,4 @@ class TripSerializer(serializers.ModelSerializer):
         fields = ['id', 'start', 'end', 'status', 'departure_time', 'arrival_time',
                   'driver', 'driver_name', 'truck', 'truck_vin', 'planned_miles',
                   'actual_miles', 'cpm', 'pay']
-        read_only_fields = ['id']
+        read_only_fields = ['id','status']

@@ -26,6 +26,7 @@ def test_update_truck():
     service_truck.update_truck(truck.id, {"year": 2010})
     assert TruckRepository.get_truck(truck.id).year == 2010
 
+
 @pytest.mark.django_db
 def test_remove_all_drivers():
     truck1 = factories.TruckFactory(year=2005)

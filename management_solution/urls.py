@@ -25,6 +25,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     #throttled endpoint for login
     path('api/token/',LoginThrottleView.as_view(),name='token_obtain_pair'),
-    path('api/token/refresh', TokenRefreshView.as_view(),name = 'token_refresh'),
+    path('api/token/refresh/', TokenRefreshView.as_view(),name = 'token_refresh'),
 
 ]

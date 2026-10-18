@@ -12,6 +12,13 @@ def add_driver(data: dict) -> Driver:
     driver.save()
     return driver
 
+ALLOWED_DRIVER_UPDATE_FIELDS = {
+    "truck",                 # allow assigning a truck
+    "driver_name",
+    "driver_licensenumber",
+    "driver_status",
+}
+
 @transaction.atomic
 def update_driver(driver_id: int, data: dict) -> Driver | None:
     driver = DriverRepository.get_driver(driver_id)
@@ -19,11 +26,12 @@ def update_driver(driver_id: int, data: dict) -> Driver | None:
         return None
     else:
         for key, value in data.items():
-            if key == "truck":
-                truck = Truck.objects.get(id=int(value))
-                setattr(driver,key,truck)
-                continue
-            setattr(driver, key, value)
+            if key in ALLOWED_DRIVER_UPDATE_FIELDS:
+                if key == "truck":
+                    truck = Truck.objects.get(id=int(value))
+                    setattr(driver,key,truck)
+                    continue
+                setattr(driver, key, value)
         driver.clean()
         driver.save()
         return driver

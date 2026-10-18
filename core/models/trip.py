@@ -44,6 +44,8 @@ class Trip(models.Model):
             raise ValidationError("The trip was already completed")
         if self.status == Trip.TripStatus.CANCELED:
             raise ValidationError("The trip was already Canceled")
+        if self.status == Trip.TripStatus.PLANNED:
+            raise ValidationError("The trip is still in planning Phase: cancel instead")
 
     def validate_cancel(self) -> None:
         if self.status == Trip.TripStatus.COMPLETE:

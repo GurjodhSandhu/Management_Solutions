@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
 from pathlib import Path
-
+from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -43,6 +43,7 @@ INSTALLED_APPS = [
 
     'rest_framework',
     "corsheaders",
+    "rest_framework_simplejwt.token_blacklist",
 
 
 ]
@@ -149,6 +150,20 @@ REST_FRAMEWORK = {
         "anon": "20/min",          # anonymous users
         "user": "100/min",         # authenticated users
         "login": "5/min",          # scoped throttle for /api/token/
-    }
+    },
+    "EXCEPTION_HANDLER": "api.exceptions.custom_exception_handler",
+
+}
+
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+
+    # Security features
+    "ROTATE_REFRESH_TOKENS": True,
+    "BLACKLIST_AFTER_ROTATION": True,
+
+    # Recommended defaults
+    "AUTH_HEADER_TYPES": ("Bearer",),
 }
 

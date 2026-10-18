@@ -20,7 +20,16 @@ def delete_truck(truck_id: int) -> bool:
         raise ValidationError("Truck is on an active trip cannot remove")
     TruckRepository.delete_truck(truck_id)
     return True
-
+ALLOWED_TRUCK_UPDATE_FIELDS = {
+    "vin",
+    "brand",
+    "year",
+    "make",
+    "mileage",
+    "plate"
+    "truck_status",
+    "truck_location",
+}
 @transaction.atomic
 def update_truck(truck_id: int,data: dict) -> Truck|None:
     truck = TruckRepository.get_truck(truck_id)
@@ -28,7 +37,8 @@ def update_truck(truck_id: int,data: dict) -> Truck|None:
         return None
     else:
         for key, value  in data.items():
-            setattr(truck,key, value)
+            if key in ALLOWED_TRUCK_UPDATE_FIELDS:
+                setattr(truck,key, value)
         truck.full_clean()
         truck.save()
         return truck
