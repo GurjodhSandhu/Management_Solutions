@@ -28,8 +28,13 @@ def update_driver(driver_id: int, data: dict) -> Driver | None:
         for key, value in data.items():
             if key in ALLOWED_DRIVER_UPDATE_FIELDS:
                 if key == "truck":
-                    truck = Truck.objects.get(id=int(value))
-                    setattr(driver,key,truck)
+                    if value in (None, ""):
+                        new_truck = None
+                    elif isinstance(value, Truck): #if data gives truck object directly
+                        new_truck = value
+                    else:
+                        new_truck = Truck.objects.get(id=int(value)) #if given truck id
+                    driver.truck = new_truck
                     continue
                 setattr(driver, key, value)
         driver.full_clean()

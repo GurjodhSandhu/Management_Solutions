@@ -200,16 +200,13 @@ def cancel_trip(trip_id: int) -> Trip: #planned -> canceled
     trip = Trip.objects.select_for_update().filter(id=trip_id).first()
     if trip is None:
         raise ValidationError("No trip found")
-    driver = Driver.objects.select_for_update().filter(id=trip.driver_id).first()
-    truck = Truck.objects.select_for_update().filter(id=trip.truck_id).first()
 
     trip.validate_cancel()
     trip.status =  Trip.TripStatus.CANCELED
 
     trip.full_clean()
 
-    driver.save()
-    truck.save()
+
     trip.save()
     return trip
 

@@ -15,7 +15,7 @@ class DriverSerializer(serializers.ModelSerializer):
     class Meta:
         model = Driver
         fields = ['id', 'driver_name', 'driver_licensenumber',
-                  'driver_status', 'truck_id']
+                  'driver_status','truck', 'truck_id']
         read_only_fields = ['id']
 
 class TripSerializer(serializers.ModelSerializer):

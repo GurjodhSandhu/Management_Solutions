@@ -6,7 +6,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from django.core.exceptions import ValidationError
 from core.models import Truck, Driver, Trip
 from .serializers import TruckSerializer, DriverSerializer, TripSerializer
 
@@ -14,7 +13,6 @@ from core.services import service_truck, service_driver, service_trip
 from api.permission import IsAdminOrDispatcher
 
 from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework.throttling import ScopedRateThrottle
 
 class LoginThrottleView(TokenObtainPairView):
     throttle_scope = "login"
@@ -40,27 +38,19 @@ class TruckViewSet(viewsets.ModelViewSet):
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         serializer = self.get_serializer(data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-
         truck = service_truck.add_truck(serializer.validated_data)
-
-        output = self.get_serializer(truck)
-        return Response(output.data, status=status.HTTP_201_CREATED)
-
+        return Response(self.get_serializer(truck).data, status=status.HTTP_201_CREATED)
 
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        truck = self.get_object()
         serializer = self.get_serializer(data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        truck_id = kwargs.get('pk')
-        truck = service_truck.update_truck(truck_id, serializer.validated_data)
-
-        output = self.get_object()
-
-        return Response(output.data, status=status.HTTP_200_OK)
-
+        truck = service_truck.update_truck(truck.id, serializer.validated_data)
+        return Response(self.get_serializer(truck).data, status=status.HTTP_200_OK)
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        truck_id = kwargs["pk"]
-        service_truck.delete_truck(truck_id)
+        truck = self.get_object()
+        service_truck.delete_truck(truck.id)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -79,20 +69,17 @@ class DriverViewSet(viewsets.ModelViewSet):
         return Response(output.data, status=status.HTTP_201_CREATED)
 
 
-
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        driver = self.get_object()
         serializer = self.get_serializer(data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-        driver_id = kwargs.get('pk')
 
-        driver = service_driver.update_driver(driver_id, serializer.validated_data)
-        output = self.self.get_object()
-        return Response(output.data, status=status.HTTP_200_OK)
-
+        driver = service_driver.update_driver(driver.id, serializer.validated_data)
+        return Response(self.get_serializer(driver).data, status=status.HTTP_200_OK)
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        driver_id = kwargs["pk"]
-        service_driver.delete_driver(driver_id)
+        driver = self.get_object()
+        service_driver.delete_driver(driver.id)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -107,60 +94,45 @@ class TripViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         trip = service_trip.new_trip(serializer.validated_data)
-        output = self.get_serializer(trip)
-        return Response(output.data, status=status.HTTP_201_CREATED)
+        return Response(self.get_serializer(trip).data, status=status.HTTP_201_CREATED)
 
 
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-
+        trip = self.get_object()
         serializer = self.get_serializer(data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-
-        trip_id = kwargs['pk']
-        trip = service_trip.update_trip(trip_id, serializer.validated_data)
-
-        output = self.self.get_object()
-        return Response(output.data, status=status.HTTP_200_OK)
-
+        trip = service_trip.update_trip(trip.id, serializer.validated_data)
+        return Response(self.get_serializer(trip).data, status=status.HTTP_200_OK)
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        trip_id = kwargs['pk']
-        service_trip.delete_trip(trip_id)
+        trip = self.get_object()
+        service_trip.delete_trip(trip.id)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
     @action(detail=True, methods=['post'])
     def start(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         trip = self.get_object()
-        trip_id = trip.id
-        service_trip.start_trip(trip_id)
-        output = self.self.get_object()
-        return Response(output.data,status=status.HTTP_200_OK)
-
+        trip = service_trip.start_trip(trip.id)
+        return Response(self.get_serializer(trip).data, status=status.HTTP_200_OK)
 
     @action(detail=True, methods=['post'])
     def complete(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         trip = self.get_object()
-        trip_id = trip.id
-        service_trip.complete_trip(trip_id)
-        output = self.self.get_object()
-        return Response(output.data,status=status.HTTP_200_OK)
+        trip = service_trip.complete_trip(trip.id)
+        return Response(self.get_serializer(trip).data, status=status.HTTP_200_OK)
 
 
     @action(detail=True, methods=['post'])
     def incomplete(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         trip = self.get_object()
-        trip_id = trip.id
-        service_trip.incomplete_trip(trip_id)
-        output = self.self.get_object()
-        return Response(output.data,status=status.HTTP_200_OK)
+        trip = service_trip.incomplete_trip(trip.id)
+        return Response(self.get_serializer(trip).data, status=status.HTTP_200_OK)
 
 
     @action(detail=True, methods=['post'])
     def canceltrip(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         trip = self.get_object()
-        trip_id = trip.id
-        service_trip.cancel_trip(trip_id)
-        output = self.self.get_object()
-        return Response(output.data,status=status.HTTP_200_OK)
+        trip = service_trip.cancel_trip(trip.id)
+        return Response(self.get_serializer(trip).data, status=status.HTTP_200_OK)
 

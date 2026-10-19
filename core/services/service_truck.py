@@ -26,7 +26,7 @@ ALLOWED_TRUCK_UPDATE_FIELDS = {
     "year",
     "make",
     "mileage",
-    "plate"
+    "plate",
     "truck_status",
     "truck_location",
 }
