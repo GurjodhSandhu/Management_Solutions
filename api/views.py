@@ -23,6 +23,10 @@ class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request):
+        refresh = request.data.get("refresh")
+        if not refresh:
+            return Response({"error": {"code": "invalid_token", "message": "Refresh token required."}},
+                            status=status.HTTP_400_BAD_REQUEST)
         try:
             RefreshToken(request.data.get("refresh")).blacklist()
         except TokenError:
@@ -96,8 +100,7 @@ class DriverViewSet(viewsets.ModelViewSet):
 
 
 class TripViewSet(viewsets.ModelViewSet):
-    queryset = Trip.objects.all()
-    queryset = Trip.objects.select_related("driver", "truck")
+    queryset = Trip.objects.select_related("driver", "truck").order_by("id")
     serializer_class = TripSerializer
     permission_classes = [IsAuthenticated,IsAdminOrDispatcher]
 
@@ -114,7 +117,10 @@ class TripViewSet(viewsets.ModelViewSet):
         trip = self.get_object()
         serializer = self.get_serializer(data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
+        if 'truck' in serializer.validated_data or 'driver' in serializer.validated_data:
+            return(Response(status=status.HTTP_400_BAD_REQUEST))
         trip = service_trip.update_trip(trip.id, serializer.validated_data)
+
         return Response(self.get_serializer(trip).data, status=status.HTTP_200_OK)
 
     def destroy(self, request: Request, *args: Any, **kwargs: Any) -> Response:

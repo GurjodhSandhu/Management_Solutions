@@ -115,8 +115,9 @@ class Trip(models.Model):
         if self.status == Trip.TripStatus.PLANNED:
             self.validate_driver_time_conflicts()
             self.validate_truck_time_conflicts()
-            if self.departure_time > self.arrival_time:
-                raise ValidationError("the planned departure time is after the arrival time")
+            if self.departure_time and self.arrival_time:
+                if self.departure_time > self.arrival_time:
+                    raise ValidationError("the planned departure time is after the arrival time")
         if self.status == Trip.TripStatus.IN_PROGRESS:
             if self.departure_time is None:
                 raise ValidationError("departure_time is required")
