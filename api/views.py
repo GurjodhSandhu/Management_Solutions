@@ -13,10 +13,22 @@ from core.services import service_truck, service_driver, service_trip
 from api.permission import IsAdminOrDispatcher
 
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.exceptions import TokenError
 
 class LoginThrottleView(TokenObtainPairView):
     throttle_scope = "login"
 
+class LogoutView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        try:
+            RefreshToken(request.data.get("refresh")).blacklist()
+        except TokenError:
+            return Response({"error": {"code": "invalid_token", "message": "Invalid or expired token."}},
+                            status=status.HTTP_400_BAD_REQUEST)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 class MeView(APIView):
     permission_classes = [IsAuthenticated]
 
@@ -36,7 +48,7 @@ class TruckViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticated,IsAdminOrDispatcher]
 
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
-        serializer = self.get_serializer(data=request.data, partial=True)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         truck = service_truck.add_truck(serializer.validated_data)
         return Response(self.get_serializer(truck).data, status=status.HTTP_201_CREATED)
@@ -62,7 +74,7 @@ class DriverViewSet(viewsets.ModelViewSet):
 
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
-        serializer = self.get_serializer(data=request.data, partial=True)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         driver = service_driver.add_driver(serializer.validated_data)
         output = self.get_serializer(driver)
@@ -85,13 +97,14 @@ class DriverViewSet(viewsets.ModelViewSet):
 
 class TripViewSet(viewsets.ModelViewSet):
     queryset = Trip.objects.all()
+    queryset = Trip.objects.select_related("driver", "truck")
     serializer_class = TripSerializer
     permission_classes = [IsAuthenticated,IsAdminOrDispatcher]
 
 
     def create(self, request: Request, *args: Any, **kwargs: Any) -> Response:
 
-        serializer = self.get_serializer(data=request.data, partial=True)
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         trip = service_trip.new_trip(serializer.validated_data)
         return Response(self.get_serializer(trip).data, status=status.HTTP_201_CREATED)
@@ -131,7 +144,7 @@ class TripViewSet(viewsets.ModelViewSet):
 
 
     @action(detail=True, methods=['post'])
-    def canceltrip(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    def cancel(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         trip = self.get_object()
         trip = service_trip.cancel_trip(trip.id)
         return Response(self.get_serializer(trip).data, status=status.HTTP_200_OK)

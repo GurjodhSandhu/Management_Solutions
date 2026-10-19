@@ -8,6 +8,7 @@ class Trip(models.Model):
     arrival_time = models.DateTimeField(null=True, blank=True)
     departure_time = models.DateTimeField(null=True, blank=True)
 
+
     driver = models.ForeignKey("core.Driver",on_delete=models.SET_NULL,null=True,blank=True,related_name='trips')
     truck = models.ForeignKey("core.Truck",on_delete=models.SET_NULL,null=True,blank=True,related_name='trips')
 
@@ -114,11 +115,11 @@ class Trip(models.Model):
         if self.status == Trip.TripStatus.PLANNED:
             self.validate_driver_time_conflicts()
             self.validate_truck_time_conflicts()
+            if self.departure_time > self.arrival_time:
+                raise ValidationError("the planned departure time is after the arrival time")
         if self.status == Trip.TripStatus.IN_PROGRESS:
             if self.departure_time is None:
                 raise ValidationError("departure_time is required")
-
-
 
     def __str__(self):
         return f"Trip {self.id}: {self.start} → {self.end} ({self.status})"

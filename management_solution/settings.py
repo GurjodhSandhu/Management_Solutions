@@ -167,3 +167,4 @@ SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("Bearer",),
 }
 
+CORS_ORIGIN_ALLOW_ALL = True

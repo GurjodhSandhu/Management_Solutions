@@ -6,7 +6,7 @@ class TruckSerializer(serializers.ModelSerializer):
         model = Truck
         fields = ['id', 'vin', 'brand', 'make', 'year', 'mileage',
                   'truck_status', 'truck_location']
-        read_only_fields = ['id']
+        read_only_fields = ['id','truck_status']
 
 
 class DriverSerializer(serializers.ModelSerializer):
@@ -16,7 +16,7 @@ class DriverSerializer(serializers.ModelSerializer):
         model = Driver
         fields = ['id', 'driver_name', 'driver_licensenumber',
                   'driver_status','truck', 'truck_id']
-        read_only_fields = ['id']
+        read_only_fields = ['id','driver_status']
 
 class TripSerializer(serializers.ModelSerializer):
     driver_name = serializers.CharField(source='driver.driver_name', read_only=True)
