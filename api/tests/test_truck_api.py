@@ -37,11 +37,14 @@ def test_add_truck_with_bad_field(admin_client, payload, bad_field):
      ] )
 def test_update_truck(admin_client,payload,field):
     truck = Truck.objects.create(vin="1HGCM82633A004352", mileage=100)
+    before = model_to_dict(truck)
     res = admin_client.patch(f"/api/trucks/{truck.id}/",payload, format="json")
     assert res.status_code == 200
     assert res.data[field] == payload[field]
     truck.refresh_from_db()
-    assert getattr(truck, field) == payload[field]
+    after = model_to_dict(truck)
+    expected = {**before, field: payload[field]}
+    assert after == expected
 
 @pytest.mark.parametrize("payload, bad_field",bad_payload,ids = bad_ids)
 def test_update_truck_with_bad_field(admin_client, payload, bad_field):
@@ -53,7 +56,6 @@ def test_update_truck_with_bad_field(admin_client, payload, bad_field):
     truck.refresh_from_db()
     after = model_to_dict(truck)
     assert before == after
-
 
 def test_delete_truck(admin_client):
     truck = Truck.objects.create(vin="1HGCM82633A004888", mileage=500)

@@ -11,7 +11,6 @@ class TruckSerializer(serializers.ModelSerializer):
 
 class DriverSerializer(serializers.ModelSerializer):
     truck_id = serializers.IntegerField(source='truck.id', read_only=True)
-
     class Meta:
         model = Driver
         fields = ['id', 'driver_name', 'driver_licensenumber',
