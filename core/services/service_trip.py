@@ -87,7 +87,7 @@ def delete_trip(trip_id: int) -> None:
     if not trip:
         return None
     if trip.status == Trip.TripStatus.IN_PROGRESS:
-        raise ValidationError("Trip is active please cancel first: ")
+        raise ValidationError("Trip is active please cancel or set incomplete first: ")
     TripRepository.delete_trip(trip_id)
 
 @transaction.atomic
