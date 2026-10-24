@@ -14,3 +14,23 @@ def admin_client(db):
     client = APIClient()
     client.force_authenticate(user=user)
     return client
+
+@pytest.fixture
+def dispatcher_client(db):
+    user = User.objects.create_user(username='dispatch', email='', password='321')
+    user.groups.add(Group.objects.get_or_create(name="dispatcher")[0])
+    client = APIClient()
+    client.force_authenticate(user=user)
+    return client
+
+@pytest.fixture
+def regular_client(db):
+    user = User.objects.create_user(username='regular', email='', password='')
+    client = APIClient()
+    client.force_authenticate(user=user)
+    return client
+
+@pytest.fixture
+def anon_client(db):
+    client = APIClient()
+    return client
