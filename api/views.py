@@ -47,7 +47,7 @@ class MeView(APIView):
         })
 
 class TruckViewSet(viewsets.ModelViewSet):
-    queryset = Truck.objects.all()
+    queryset = Truck.objects.all().order_by("id")
     serializer_class = TruckSerializer
     permission_classes = [IsAuthenticated,IsAdminOrDispatcher]
 
@@ -72,7 +72,7 @@ class TruckViewSet(viewsets.ModelViewSet):
 
 
 class DriverViewSet(viewsets.ModelViewSet):
-    queryset = Driver.objects.all()
+    queryset = Driver.objects.all().order_by("id")
     serializer_class = DriverSerializer
     permission_classes = [IsAuthenticated,IsAdminOrDispatcher]
 

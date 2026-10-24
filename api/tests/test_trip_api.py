@@ -1,4 +1,7 @@
 from datetime import datetime, timezone
+from core.services.service_trip import start_trip
+from rest_framework import status
+
 from api.serializers import TripSerializer
 
 import pytest
@@ -117,3 +120,99 @@ def test_delete_trip_nonexistent(admin_client):
     assert not Trip.objects.filter(id = trip_id).exists()
     res = admin_client.delete(f"/api/trips/{trip_id}/",format="json")
     assert res.status_code == 404
+
+def test_trip_start_valid(admin_client):
+    driver = Driver.objects.create()
+    truck = Truck.objects.create()
+    trip = Trip.objects.create(**{"start": "vancouver", "end": "Calgary","truck":truck,"driver":driver})
+    assert trip.status == Trip.TripStatus.PLANNED
+    res = admin_client.post(f"/api/trips/{trip.id}/start/")
+    trip.refresh_from_db()
+    truck.refresh_from_db()
+    driver.refresh_from_db()
+    assert res.status_code == 200
+    assert trip.status == Trip.TripStatus.IN_PROGRESS
+    assert truck.truck_status == Truck.TruckStatus.UNAVAILABLE
+    assert driver.driver_status == Driver.DriverStatus.UNAVAILABLE
+    assert trip.departure_time is not None
+
+def test_trip_start_invalid(admin_client):
+    driver = Driver.objects.create()
+    truck = Truck.objects.create()
+    trip = Trip.objects.create(**{"start": "vancouver", "end": "Calgary","truck":truck,}) #missing driver
+    assert trip.status == Trip.TripStatus.PLANNED
+    res = admin_client.post(f"/api/trips/{trip.id}/start/")
+    trip.refresh_from_db()
+    truck.refresh_from_db()
+    driver.refresh_from_db()
+    assert res.status_code == 400
+    assert trip.status == Trip.TripStatus.PLANNED
+    assert truck.truck_status == Truck.TruckStatus.AVAILABLE
+    assert driver.driver_status == Driver.DriverStatus.AVAILABLE
+    assert trip.departure_time is None
+
+def test_trip_complete_valid(admin_client):
+    driver = Driver.objects.create()
+    truck = Truck.objects.create()
+    trip = Trip.objects.create(**{"start": "vancouver", "end": "Calgary","truck":truck,"driver":driver})
+    assert trip.status == Trip.TripStatus.PLANNED
+    admin_client.post(f"/api/trips/{trip.id}/start/")
+    trip.refresh_from_db()
+    assert trip.status == Trip.TripStatus.IN_PROGRESS
+    res = admin_client.post(f"/api/trips/{trip.id}/complete/")
+    trip.refresh_from_db()
+    truck.refresh_from_db()
+    driver.refresh_from_db()
+    assert res.status_code == 200
+    assert trip.status == Trip.TripStatus.COMPLETE
+    assert truck.truck_status == Truck.TruckStatus.AVAILABLE
+    assert driver.driver_status == Driver.DriverStatus.AVAILABLE
+    assert trip.departure_time is not None
+    assert trip.arrival_time is not None
+
+def test_trip_complete_invalid(admin_client): #plan -> inpro -> incomplete -x-> complete
+    driver = Driver.objects.create()
+    truck = Truck.objects.create()
+    trip = Trip.objects.create(**{"start": "vancouver", "end": "Calgary","truck":truck,"driver":driver})
+
+    admin_client.post(f"/api/trips/{trip.id}/start/")
+    admin_client.post(f"/api/trips/{trip.id}/incomplete/")
+    trip.refresh_from_db()
+    assert trip.status == Trip.TripStatus.INCOMPLETE #if trip is already set to incomplete
+
+    res = admin_client.post(f"/api/trips/{trip.id}/complete/")
+
+    trip.refresh_from_db()
+    truck.refresh_from_db()
+    driver.refresh_from_db()
+    assert res.status_code == 400
+    assert truck.truck_status == Truck.TruckStatus.AVAILABLE #make sure status remained the same
+    assert driver.driver_status == Driver.DriverStatus.AVAILABLE
+    assert trip.status == Trip.TripStatus.INCOMPLETE
+
+def test_trip_cancel_valid(admin_client): #plan -> cancel
+    driver = Driver.objects.create()
+    truck = Truck.objects.create()
+    trip = Trip.objects.create(**{"start": "vancouver", "end": "Calgary","truck":truck,"driver":driver})
+    assert trip.status == Trip.TripStatus.PLANNED
+    res = admin_client.post(f"/api/trips/{trip.id}/cancel/")
+    trip.refresh_from_db()
+    truck.refresh_from_db()
+    driver.refresh_from_db()
+    assert res.status_code == 200
+    assert trip.status == Trip.TripStatus.CANCELED
+    assert truck.truck_status == Truck.TruckStatus.AVAILABLE
+    assert driver.driver_status == Driver.DriverStatus.AVAILABLE
+
+def test_trip_cancel_invalid(admin_client): #plan ---> inpro -x-> cancel
+    driver = Driver.objects.create()
+    truck = Truck.objects.create()
+    trip = Trip.objects.create(**{"start": "vancouver", "end": "Calgary","truck":truck,"driver":driver})
+    assert trip.status == Trip.TripStatus.PLANNED
+    admin_client.post(f"/api/trips/{trip.id}/start/")
+    trip.refresh_from_db()
+    assert trip.status == Trip.TripStatus.IN_PROGRESS
+    res = admin_client.post(f"/api/trips/{trip.id}/cancel/")
+    trip.refresh_from_db()
+    assert res.status_code == 400
+    assert trip.status == Trip.TripStatus.IN_PROGRESS
