@@ -88,7 +88,7 @@ def test_update_trip_bad_field_truck(admin_client):
     trip = Trip.objects.create()
     truck = Truck.objects.create()
     before = TripSerializer(trip).data
-    res = admin_client.patch(f"/api/trips/{trip.id}/", {"driver": truck.id}, format="json")
+    res = admin_client.patch(f"/api/trips/{trip.id}/", {"truck": truck.id}, format="json")
     assert res.status_code == 400
     trip.refresh_from_db()
     after = TripSerializer(trip).data
@@ -101,6 +101,8 @@ def test_assign_truck_to_trip(admin_client):
     assert res.status_code == 200, res.data
     trip.refresh_from_db()
     assert trip.truck == truck
+    assert res.data['truck'] == truck.id
+
 
 def test_assign_truck_to_trip_no_truck(admin_client):
     truck = Truck.objects.create()
@@ -127,6 +129,7 @@ def test_assign_driver_to_trip(admin_client):
     assert res.status_code == 200, res.data
     trip.refresh_from_db()
     assert trip.driver == driver
+    assert res.data['driver'] == driver.id
 
 def test_assign_driver_to_trip_no_driver(admin_client):
     driver = Driver.objects.create()

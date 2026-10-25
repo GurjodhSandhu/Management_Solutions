@@ -103,6 +103,7 @@ def assign_driver_to_trip(trip_id: int,driver_id: int) -> None:
     trip.driver = driver
     trip.full_clean()
     trip.save()
+    return trip
 
 @transaction.atomic
 def assign_truck_to_trip(trip_id: int,truck_id: int) -> None:
@@ -117,6 +118,7 @@ def assign_truck_to_trip(trip_id: int,truck_id: int) -> None:
     trip.truck = truck
     trip.full_clean()
     trip.save()
+    return trip
 #TRIP STATE MACHINE SERVICES --------
 
 @transaction.atomic

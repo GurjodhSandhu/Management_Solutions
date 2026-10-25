@@ -18,8 +18,8 @@ class DriverSerializer(serializers.ModelSerializer):
         read_only_fields = ['id','driver_status']
 
 class TripSerializer(serializers.ModelSerializer):
-    driver_name = serializers.CharField(source='driver.driver_name', read_only=True)
-    truck_vin = serializers.CharField(source='truck.vin', read_only=True)
+    driver_name = serializers.CharField(source='driver.driver_name', read_only=True, allow_null=True)
+    truck_vin = serializers.CharField(source='truck.vin', read_only=True, allow_null=True)
 
     class Meta:
         model = Trip
@@ -27,3 +27,9 @@ class TripSerializer(serializers.ModelSerializer):
                   'driver', 'driver_name', 'truck', 'truck_vin', 'planned_miles',
                   'actual_miles', 'cpm', 'pay']
         read_only_fields = ['id','status']
+
+class AssignTruckSerializer(serializers.Serializer):
+    truck = serializers.PrimaryKeyRelatedField(queryset=Truck.objects.all())
+
+class AssignDriverSerializer(serializers.Serializer):
+    driver = serializers.PrimaryKeyRelatedField(queryset=Driver.objects.all())

@@ -4,6 +4,10 @@ from django.core.cache import cache
 from rest_framework.test import APIClient
 
 @pytest.fixture(autouse=True)
+def no_ssl_redirect(settings):
+    settings.SECURE_SSL_REDIRECT = False
+
+@pytest.fixture(autouse=True)
 def clear_throttle_cache():
     cache.clear()
 

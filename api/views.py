@@ -8,7 +8,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from core.models import Truck, Driver, Trip
-from .serializers import TruckSerializer, DriverSerializer, TripSerializer
+from .serializers import TruckSerializer, DriverSerializer, TripSerializer, AssignDriverSerializer, AssignTruckSerializer
 
 from core.services import service_truck, service_driver, service_trip
 from api.permission import IsAdminOrDispatcher
@@ -157,12 +157,20 @@ class TripViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['post'])
     def assign_truck(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        serializer = AssignTruckSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         trip = self.get_object()
-        service_trip.assign_truck_to_trip(trip.id, request.data['truck'])
+
+        service_trip.assign_truck_to_trip(trip.id, serializer.validated_data["truck"].id,)
+        trip.refresh_from_db()
         return Response(self.get_serializer(trip).data, status=status.HTTP_200_OK)
 
-    @action(detail=True, methods=['post'])
-    def assign_driver(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+    @action(detail=True, methods=["post"])
+    def assign_driver(self, request, *args, **kwargs):
+        serializer = AssignDriverSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
         trip = self.get_object()
-        service_trip.assign_driver_to_trip(trip.id, request.data['driver'])
+        service_trip.assign_driver_to_trip(trip.id, serializer.validated_data["driver"].id,)
+        trip.refresh_from_db()
         return Response(self.get_serializer(trip).data, status=status.HTTP_200_OK)
