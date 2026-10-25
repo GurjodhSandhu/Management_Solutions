@@ -1,5 +1,6 @@
 from typing import Any
 
+from django.db.models import Model
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -112,7 +113,6 @@ class TripViewSet(viewsets.ModelViewSet):
         trip = service_trip.new_trip(serializer.validated_data)
         return Response(self.get_serializer(trip).data, status=status.HTTP_201_CREATED)
 
-
     def update(self, request: Request, *args: Any, **kwargs: Any) -> Response:
         trip = self.get_object()
         serializer = self.get_serializer(data=request.data, partial=True)
@@ -155,3 +155,14 @@ class TripViewSet(viewsets.ModelViewSet):
         trip = service_trip.cancel_trip(trip.id)
         return Response(self.get_serializer(trip).data, status=status.HTTP_200_OK)
 
+    @action(detail=True, methods=['post'])
+    def assign_truck(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        trip = self.get_object()
+        service_trip.assign_truck_to_trip(trip.id, request.data['truck'])
+        return Response(self.get_serializer(trip).data, status=status.HTTP_200_OK)
+
+    @action(detail=True, methods=['post'])
+    def assign_driver(self, request: Request, *args: Any, **kwargs: Any) -> Response:
+        trip = self.get_object()
+        service_trip.assign_driver_to_trip(trip.id, request.data['driver'])
+        return Response(self.get_serializer(trip).data, status=status.HTTP_200_OK)

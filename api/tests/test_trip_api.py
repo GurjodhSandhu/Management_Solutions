@@ -94,6 +94,61 @@ def test_update_trip_bad_field_truck(admin_client):
     after = TripSerializer(trip).data
     assert before == after
 
+def test_assign_truck_to_trip(admin_client):
+    truck = Truck.objects.create()
+    trip = Trip.objects.create(start="start",end="end")
+    res = admin_client.post(f"/api/trips/{trip.id}/assign_truck/",{"truck":truck.id}, format="json")
+    assert res.status_code == 200, res.data
+    trip.refresh_from_db()
+    assert trip.truck == truck
+
+def test_assign_truck_to_trip_no_truck(admin_client):
+    truck = Truck.objects.create()
+    truck_id = truck.id
+    truck.delete()
+    trip = Trip.objects.create(start="start",end="end")
+    res = admin_client.post(f"/api/trips/{trip.id}/assign_truck/",{"truck":truck_id}, format="json")
+    assert res.status_code == 400, res.data
+    trip.refresh_from_db()
+    assert trip.truck == None
+
+def test_assign_truck_to_trip_no_trip(admin_client):
+    truck = Truck.objects.create()
+    trip = Trip.objects.create(start="start",end="end")
+    trip_id = trip.id
+    trip.delete()
+    res = admin_client.post(f"/api/trips/{trip_id}/assign_truck/",{"truck":truck.id}, format="json")
+    assert res.status_code == 404, res.data #nonexistent trip url not found
+
+def test_assign_driver_to_trip(admin_client):
+    driver = Driver.objects.create()
+    trip = Trip.objects.create(start="start",end="end")
+    res = admin_client.post(f"/api/trips/{trip.id}/assign_driver/",{"driver":driver.id}, format="json")
+    assert res.status_code == 200, res.data
+    trip.refresh_from_db()
+    assert trip.driver == driver
+
+def test_assign_driver_to_trip_no_driver(admin_client):
+    driver = Driver.objects.create()
+    driver_id = driver.id
+    driver.delete()
+    trip = Trip.objects.create(start="start",end="end")
+    res = admin_client.post(f"/api/trips/{trip.id}/assign_driver/",{"driver":driver_id}, format="json")
+    assert res.status_code == 400, res.data
+    trip.refresh_from_db()
+    assert trip.driver == None
+
+def test_assign_driver_to_trip_no_trip(admin_client):
+    driver = Driver.objects.create()
+
+    trip = Trip.objects.create(start="start", end="end")
+    trip_id = trip.id
+    trip.delete()
+
+    res = admin_client.post(f"/api/trips/{trip_id}/assign_driver/",{"driver": driver.id},format="json",)
+
+    assert res.status_code == 404
+
 
 def test_delete_trip(admin_client):
     trip = Trip.objects.create(**{"start": "vancouver", "end": "Calgary","arrival_time":"2026-11-22T18:00:00Z","departure_time":"2026-10-22T18:00:00Z"})
@@ -216,3 +271,4 @@ def test_trip_cancel_invalid(admin_client): #plan ---> inpro -x-> cancel
     trip.refresh_from_db()
     assert res.status_code == 400
     assert trip.status == Trip.TripStatus.IN_PROGRESS
+
