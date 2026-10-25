@@ -17,8 +17,8 @@ class Trip(models.Model):
     loaded_miles = models.FloatField(default=0)
     empty_miles = models.FloatField(default=0)
 
-    cpm = models.FloatField(default=0)
-    pay = models.FloatField(default=0, null = True, blank = True)
+    cpm = models.DecimalField(default=0,max_digits=8,decimal_places=4 )
+    pay = models.DecimalField(default=0,max_digits=12,decimal_places=2, null = True, blank = True)
 
 
     class TripStatus(models.TextChoices):
@@ -48,12 +48,16 @@ class Trip(models.Model):
             raise ValidationError("The trip was already Canceled")
         if self.status == Trip.TripStatus.PLANNED:
             raise ValidationError("The trip is still in planning Phase: cancel instead")
+        if self.status == Trip.TripStatus.INCOMPLETE:
+            raise ValidationError("The trip was already incomplete")
 
     def validate_cancel(self) -> None:
         if self.status == Trip.TripStatus.COMPLETE:
             raise ValidationError("The trip was already completed")
         if self.status != Trip.TripStatus.PLANNED:
             raise ValidationError("only planned trips can be cancelled")
+        if self.status == Trip.TripStatus.CANCELED:
+            raise ValidationError("The trip was already Canceled")
 
     def mark_in_progress(self) -> None:
         self.status = Trip.TripStatus.IN_PROGRESS

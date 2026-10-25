@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 import pytest
 from django.core.exceptions import ValidationError
 from rest_framework import status
@@ -30,8 +32,8 @@ def test_update_planned_trip():
         actual_miles=0,
         loaded_miles=0,
         empty_miles=0,
-        cpm=1.40,
-        pay=840.00,
+        cpm=Decimal("0.4"),
+        pay=Decimal("840.00"),
     )
 
     update_data = {
@@ -43,8 +45,8 @@ def test_update_planned_trip():
         "actual_miles": 10,
         "loaded_miles": 5,
         "empty_miles": 5,
-        "cpm": 1.55,
-        "pay": 1116.00,
+        "cpm": Decimal("1.55"),
+        "pay": Decimal("1116.00"),
     }
 
     updated = service_trip.update_trip(trip.id, update_data)
@@ -63,8 +65,8 @@ def test_update_planned_trip():
     assert updated.actual_miles == 10
     assert updated.loaded_miles == 5
     assert updated.empty_miles == 5
-    assert updated.cpm == 1.55
-    assert updated.pay == 1116.00
+    assert updated.cpm == Decimal("1.55")
+    assert updated.pay == Decimal("1116.00")
 
 @pytest.mark.django_db
 def test_update_other_trip():
@@ -79,8 +81,8 @@ def test_update_other_trip():
         actual_miles=100,
         loaded_miles=80,
         empty_miles=20,
-        cpm=1.40,
-        pay=840.00,
+        cpm=Decimal("1.40"),
+        pay=Decimal("840.00"),
     )
 
     update_data = {
@@ -88,8 +90,8 @@ def test_update_other_trip():
         "actual_miles": 150,
         "loaded_miles": 120,
         "empty_miles": 30,
-        "cpm": 1.55,
-        "pay": 1116.00,
+        "cpm": Decimal("1.55"),
+        "pay": Decimal("1116.00"),
 
         # Disallowed fields
         "start": "Abbotsford",
@@ -107,8 +109,8 @@ def test_update_other_trip():
     assert updated.actual_miles == 150
     assert updated.loaded_miles == 120
     assert updated.empty_miles == 30
-    assert updated.cpm == 1.55
-    assert updated.pay == 1116.00
+    assert updated.cpm == Decimal("1.55")
+    assert updated.pay == Decimal("1116.00")
 
     # Disallowed updates should NOT change
     assert updated.start == "Vancouver"
