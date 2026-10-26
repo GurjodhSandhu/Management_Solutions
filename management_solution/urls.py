@@ -20,7 +20,6 @@ from rest_framework_simplejwt.views import (TokenObtainPairView,TokenRefreshView
 from api.views import LoginThrottleView
 
 urlpatterns = [
-    path("", include("core.urls")),  # homepage → core.index
     path('api/', include('api.urls')),
     path('admin/', admin.site.urls),
     #throttled endpoint for login
