@@ -54,10 +54,11 @@ class Trip(models.Model):
     def validate_cancel(self) -> None:
         if self.status == Trip.TripStatus.COMPLETE:
             raise ValidationError("The trip was already completed")
-        if self.status != Trip.TripStatus.PLANNED:
-            raise ValidationError("only planned trips can be cancelled")
         if self.status == Trip.TripStatus.CANCELED:
             raise ValidationError("The trip was already Canceled")
+        if self.status != Trip.TripStatus.PLANNED:
+            raise ValidationError("only planned trips can be cancelled")
+
 
     def mark_in_progress(self) -> None:
         self.status = Trip.TripStatus.IN_PROGRESS

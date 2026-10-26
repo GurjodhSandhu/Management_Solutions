@@ -12,15 +12,16 @@ def add_truck(data: dict) -> Truck:
     return truck
 
 @transaction.atomic
-def delete_truck(truck_id: int) -> bool:
+def delete_truck(truck_id: int) -> Truck:
     truck = TruckRepository.get_truck(truck_id)
     if truck is None:
-        return False
+        raise ValidationError(f"There is no truck with id: {truck_id}")
 
     if truck.get_trips_active():
         raise ValidationError("Truck is on an active trip cannot remove")
+
     TruckRepository.delete_truck(truck_id)
-    return True
+    return truck
 ALLOWED_TRUCK_UPDATE_FIELDS = {
     "vin",
     "brand",
@@ -32,32 +33,34 @@ ALLOWED_TRUCK_UPDATE_FIELDS = {
     "truck_location",
 }
 @transaction.atomic
-def update_truck(truck_id: int,data: dict) -> Truck|None:
+def update_truck(truck_id: int,data: dict) -> Truck:
     truck = TruckRepository.get_truck(truck_id)
     if truck is None:
-        return None
-    else:
-        for key, value  in data.items():
-            if key in ALLOWED_TRUCK_UPDATE_FIELDS:
-                setattr(truck,key, value)
-        truck.full_clean()
-        truck.save()
-        return truck
+        raise ValidationError(f"There is no truck with id: {truck_id}")
+
+    for key, value  in data.items():
+        if key in ALLOWED_TRUCK_UPDATE_FIELDS:
+            setattr(truck,key, value)
+
+
+    truck.full_clean()
+    truck.save()
+    return truck
 
 @transaction.atomic
-def remove_all_drivers_from_truck(truck_id: int) -> bool | None:
+def remove_all_drivers_from_truck(truck_id: int) -> Truck:
     truck = TruckRepository.get_truck(truck_id)
     if truck is None:
-        raise ValidationError("Truck not found")
+        raise ValidationError(f"There is no truck with id: {truck_id}")
+
     drivers = truck.get_drivers()
     if not drivers.exists():
-        return True
-    else:
-        for driver in drivers:
-            if driver.get_trips_active().exists():
-                raise ValidationError("Driver is on an active trip cannot remove from truck")
-            driver.truck = None
-            driver.save()
-        return True
+        return truck
 
-
+    for driver in drivers:
+        if driver.get_trips_active().exists():
+            raise ValidationError("Driver is on an active trip cannot remove from truck")
+        driver.truck = None
+        driver.full_clean()
+        driver.save()
+    return truck

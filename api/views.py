@@ -118,7 +118,7 @@ class TripViewSet(viewsets.ModelViewSet):
         serializer = self.get_serializer(data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         if 'truck' in serializer.validated_data or 'driver' in serializer.validated_data:
-            return(Response(status=status.HTTP_400_BAD_REQUEST))
+            return(Response({"error": "Use the assignment endpoints to assign drivers or trucks."},status=status.HTTP_400_BAD_REQUEST))
         trip = service_trip.update_trip(trip.id, serializer.validated_data)
 
         return Response(self.get_serializer(trip).data, status=status.HTTP_200_OK)
