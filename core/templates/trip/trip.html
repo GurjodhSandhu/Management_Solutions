@@ -1,8 +1,0 @@
-{% extends "base.html" %}
-{% block content %}
-
-{% for trip in trips %}
-    {% include "trip/components/trip_card.html" with trip=trip %}
-{% endfor %}
-
-{% endblock %}
