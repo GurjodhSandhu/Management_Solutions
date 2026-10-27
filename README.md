@@ -57,7 +57,7 @@ pip install -r requirements.txt
 
 ### Configuration
 
-Create a `.env` file in the project root:
+Create a `.env` file in the project root, copy .env.example:
 
 ```env
 DJANGO_SECRET_KEY=change-me
