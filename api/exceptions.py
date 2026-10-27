@@ -37,8 +37,7 @@ def custom_exception_handler(exc, context):
             },
             status=status.HTTP_400_BAD_REQUEST,
         )
-    logger.error("Unhandled exception")
-
+    logger.error("Unhandled exception", exc_info=exc)
     # Fallback: unexpected errors
     return Response(
         {

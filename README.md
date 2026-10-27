@@ -61,6 +61,7 @@ Create a `.env` file in the project root:
 
 ```env
 DJANGO_SECRET_KEY=change-me
+DEBUG=True
 DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1
 DB_NAME=management_solution
 DB_USER=postgres
