@@ -29,8 +29,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 # SECURITY WARNING: don't run with debug turned on in production!
 
-#DEBUG = os.getenv("DEBUG", "False") == "True"
-DEBUG = True
+DEBUG = os.getenv("DEBUG", "False") == "True"
 
 ALLOWED_HOSTS = os.getenv("DJANGO_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
 
@@ -50,7 +49,7 @@ INSTALLED_APPS = [
     'rest_framework',
     "corsheaders",
     "rest_framework_simplejwt.token_blacklist",
-
+    'drf_spectacular',
 
 ]
 
@@ -143,6 +142,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
         'rest_framework.authentication.SessionAuthentication',),
@@ -190,3 +190,9 @@ if not DEBUG:
 
     SECURE_HSTS_SECONDS = 31536000
     SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Fleet Management API',
+    'DESCRIPTION': 'API documentation for management_solution database',
+    'VERSION': '1.0.0',
+}
