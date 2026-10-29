@@ -120,7 +120,7 @@ class TripViewSet(viewsets.ModelViewSet):
         if {"driver", "truck"} & set(request.data):
             return Response(
                 {"error": {"code": "validation_error",
-                           "messages": ["Use the assignment endpoints to assign drivers or trucks."]}},
+                           "messages": ["Use the assignment endpoints to assign drivers or trucks. test"]}},
                 status=status.HTTP_400_BAD_REQUEST,
             )
         trip = service_trip.update_trip(trip.id, serializer.validated_data)
