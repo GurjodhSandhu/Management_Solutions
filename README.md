@@ -11,27 +11,42 @@ A fleet-management REST API for trucking dispatch, built with Django and Django 
 - **State-aware editing.** Which trip fields can be edited depends on the trip's current status (for example, route and times are locked once a trip is in progress).
 - **Race-condition protection.** Assignments and state transitions run inside `transaction.atomic` with `select_for_update()` row locks.
 - **Test suite** (pytest) covering models, services, the API and permissions.
+- **Automated tests** with CI on every push
 
 ## Tech stack
 
-Python 3.14, Django, Django REST Framework, Simple JWT, PostgreSQL, pytest
+Python 3.14, Django, Django REST Framework, Simple JWT, PostgreSQL, pytest, Docker-compose
 
-## Architecture
+## Quick start with Docker (recommended)
 
-```
-api/                     Viewsets, serializers, permissions, error handler
-  tests/                 Role authorization, authentication and endpoint tests
-core/
-  models/                Domain models and validation rules (Truck, Driver, Trip)
-  services/              Business logic, transactions and locking
-  repositories/          Data-access helpers
-  tests/                 Model, service and state-machine tests
-management_solution/     Project settings and root URLs
+Requires [Docker](https://www.docker.com/products/docker-desktop/). You don't need Python or PostgreSQL installed.
+
+```bash
+git clone https://github.com/GurjodhSandhu/Management_Solutions.git
+cd Management_Solutions
+cp .env.example .env        # on Windows: copy .env.example .env
+docker compose up --build
 ```
 
-Requests flow in one direction: **view → service → repository / model**.
+Then open:
 
-## Getting started
+- API docs: http://localhost:8000/api/docs/
+- API root: http://localhost:8000/api/
+
+In a second terminal, create an admin user and the role groups:
+
+```bash
+docker compose exec web python manage.py createsuperuser
+# TODO: add the command you use to create the "admin" and "dispatcher" groups
+```
+
+Run the tests inside the container:
+
+```bash
+docker compose run --rm web pytest
+```
+
+## Run without Docker
 
 ### Prerequisites
 
@@ -104,6 +119,22 @@ Access tokens last 15 minutes and refresh tokens 7 days. Refresh tokens rotate o
 ```bash
 pytest
 ```
+
+## Architecture
+
+```
+api/                     Viewsets, serializers, permissions, error handler
+  tests/                 Role authorization, authentication and endpoint tests
+core/
+  models/                Domain models and validation rules (Truck, Driver, Trip)
+  services/              Business logic, transactions and locking
+  repositories/          Data-access helpers
+  tests/                 Model, service and state-machine tests
+management_solution/     Project settings and root URLs
+```
+
+Requests flow in one direction: **view → service → repository / model**.
+
 
 ## API reference
 
