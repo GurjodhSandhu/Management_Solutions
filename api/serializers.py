@@ -4,7 +4,7 @@ from core.models import Truck, Trip, Driver
 class TruckSerializer(serializers.ModelSerializer):
     class Meta:
         model = Truck
-        fields = ['id', 'vin', 'brand', 'make', 'year', 'mileage',
+        fields = ['id', 'vin', 'brand', 'make','plate', 'year', 'mileage',
                   'truck_status', 'truck_location']
         read_only_fields = ['id','truck_status']
 
