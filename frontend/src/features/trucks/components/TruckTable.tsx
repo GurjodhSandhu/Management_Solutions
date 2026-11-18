@@ -2,7 +2,7 @@ import type { Truck } from "../types"
 //import { mockTruckPage} from ".../features/trucks/mockdata.ts";
 //import TruckCard from "./TruckCard.tsx";
 
-function TruckList({ trucks }: {trucks: Truck[]}) {
+function TruckTable({ trucks }: {trucks: Truck[]}) {
  if (trucks.length === 0) {
     return <p>No trucks yet</p>
   }
@@ -13,6 +13,11 @@ function TruckList({ trucks }: {trucks: Truck[]}) {
                 <th>VIN</th>
                 <th>Brand</th>
                 <th>Status</th>
+                <th>Make</th>
+                <th>location</th>
+                <th>Plate</th>
+                <th>Mileage</th>
+
             </tr>
             </thead>
             <tbody>
@@ -21,15 +26,14 @@ function TruckList({ trucks }: {trucks: Truck[]}) {
                     <td>{truck.vin}</td>
                     <td>{truck.brand ?? '-'}</td>
                     <td>{truck.truck_status}</td>
+                    <td>{truck.make}</td>
+                    <td>{truck.truck_location}</td>
+                    <td>{truck.plate}</td>
+                    <td>{truck.mileage}</td>
                 </tr>
-
-
-
             ))}
 
             </tbody>
-
-
         </table>
 
 
@@ -42,4 +46,4 @@ function TruckList({ trucks }: {trucks: Truck[]}) {
 }
 
 
-export default TruckList;
+export default TruckTable;

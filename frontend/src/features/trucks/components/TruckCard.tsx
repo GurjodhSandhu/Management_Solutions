@@ -8,9 +8,9 @@ return <div className="truck-card">
     <p>{truck.brand}</p>
     <p>{truck.truck_status}</p>
     <p>{truck.truck_location}</p>
-    <p>truck.make</p>
-    <p>truck.year</p>
-    <p>truck.mileage</p>
+    <p>{truck.make}</p>
+    <p>{truck.year}</p>
+    <p>{truck.mileage}</p>
 
 </div>
 }

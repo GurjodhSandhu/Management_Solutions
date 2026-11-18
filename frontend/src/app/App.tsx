@@ -1,10 +1,12 @@
-//import TruckCard from '../features/trucks/components/TruckCard';
-import { mockTruckPage} from "../features/trucks/mockdata.ts";
-import TruckList from "../features/trucks/components/TruckList.tsx";
-function App() {
+import { Providers } from './providers'
+import TruckPage from '../pages/TruckPage'
 
-  const trucks = mockTruckPage.results
-  return <TruckList trucks={trucks} />
+function App() {
+  return (
+    <Providers>
+      <TruckPage />
+    </Providers>
+  )
 }
 
 export default App
