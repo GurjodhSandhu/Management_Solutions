@@ -36,13 +36,7 @@ function TruckTable({ trucks }: {trucks: Truck[]}) {
             </tbody>
         </table>
 
-
-
-
-
-
     )
-
 }
 
 

@@ -23,8 +23,9 @@ export async function apiClient<T>(
         body: options.body !== undefined ? JSON.stringify(options.body) : undefined
     })
     if (!res.ok) {
-        throw new Error(`Request failed with status ${res.status}`)
-    }
+    const errorData = await res.json()
+    throw new Error(JSON.stringify(errorData))
+}
     if (res.status == 204){
         return undefined as T
     }
