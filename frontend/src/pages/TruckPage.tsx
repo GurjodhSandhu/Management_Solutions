@@ -8,6 +8,7 @@ import type {Truck} from "../features/trucks/types.ts";
 function TruckPage() {
   const { data, isLoading, error } = useTrucks()
   const deleteTruck = useDeleteTruck()
+
   function handleDelete(truck: Truck) {
     if (!window.confirm(`Delete truck ${truck.vin ?? truck.id}?`)) return
     deleteTruck.mutate(truck.id, {
@@ -16,6 +17,7 @@ function TruckPage() {
       },
     })
   }
+
   // Store the id, not the truck object: an object is a snapshot that goes stale
   // when the list refreshes after a save. Looking it up from the list keeps it current.
   const [editingId, setEditingId] = useState<number | null>(null)
