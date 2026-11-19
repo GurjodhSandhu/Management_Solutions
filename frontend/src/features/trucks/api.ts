@@ -13,3 +13,7 @@ export function createTruck(data: TruckInput) {
 export function updateTruck({ id, data }: { id: number; data: TruckPatch }) {
   return apiClient<Truck>(`/api/trucks/${id}/`, { method: 'PATCH', body: data })
 }
+
+export function deleteTruck(id: number) {
+  return apiClient<Truck>(`/api/trucks/${id}/`, { method: 'DELETE' })
+}
