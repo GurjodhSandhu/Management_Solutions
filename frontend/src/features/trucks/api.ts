@@ -1,5 +1,5 @@
 import type { Paginated } from '../../lib/types.ts'
-import type { Truck } from './types.ts'
+import type {Truck, TruckInput, TruckPatch} from './types.ts'
 import { apiClient } from "../../lib/apiClient.ts";
 
 export function getTrucks() {
@@ -8,4 +8,8 @@ export function getTrucks() {
 
 export function createTruck(data: TruckInput) {
   return apiClient<Truck>('/api/trucks/', { method: 'POST', body: data })
+}
+
+export function updateTruck({ id, data }: { id: number; data: TruckPatch }) {
+  return apiClient<Truck>(`/api/trucks/${id}/`, { method: 'PATCH', body: data })
 }

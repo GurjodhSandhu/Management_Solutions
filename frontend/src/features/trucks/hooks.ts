@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { createTruck, getTrucks } from './api'
+import {createTruck, getTrucks, updateTruck} from './api'
 
 export function useTrucks() {
   return useQuery({
@@ -13,6 +13,17 @@ export function useCreateTruck() {
 
   return useMutation({
     mutationFn: createTruck,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['trucks'] })
+    },
+  })
+}
+
+export function useUpdateTruck() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: updateTruck,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['trucks'] })
     },

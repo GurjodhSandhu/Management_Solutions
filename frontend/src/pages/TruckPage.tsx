@@ -1,23 +1,25 @@
 import TruckTable from '../features/trucks/components/TruckTable'
+import TruckInputForm from '../features/trucks/components/TruckInputForm'
 import { useTrucks } from '../features/trucks/hooks'
-import TruckInputForm from "../features/trucks/components/TruckInputForm.tsx";
 
 function TruckPage() {
-    const { data, isLoading, error } = useTrucks()
-    if (isLoading) return <p>Loading...</p>
-    if (error) return <p>Failed to load trucks: {error.message}</p>
+  const { data, isLoading, error } = useTrucks()
 
-    return (
-        <div>
-            <h1>table</h1>
-        <TruckTable trucks={data?.results ?? []} />
-        <br/>
-            <h2>input</h2>
-            <TruckInputForm/>
+  // Only the table depends on the fetch. The form renders regardless,
+  // so a slow or failed list request never hides it.
+  return (
+    <div>
+      <h1>Trucks</h1>
 
+      {isLoading && <p>Loading trucks…</p>}
+      {error && <p role="alert">Couldn't load trucks: {error.message}</p>}
+      {data && <TruckTable trucks={data.results} />}
+
+      <h2>Add a truck</h2>
+      <TruckInputForm />
 
     </div>
-    )
+  )
 }
 
 export default TruckPage
