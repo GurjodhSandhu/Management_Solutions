@@ -41,7 +41,8 @@ function TruckTable({ trucks, onEdit, onDelete }: TruckTableProps) {
                         <button type="button" onClick={() => onDelete(truck)}>
                 Delete
               </button>
-            </td>
+
+                    </td>
                 </tr>
             ))}
 

@@ -18,7 +18,6 @@ function TruckPage() {
     })
   }
 
-  // Store the id, not the truck object: an object is a snapshot that goes stale
   // when the list refreshes after a save. Looking it up from the list keeps it current.
   const [editingId, setEditingId] = useState<number | null>(null)
   const editingTruck = data?.results.find((truck) => truck.id === editingId) ?? null
